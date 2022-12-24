@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="Hexo Theme Redefine">
+    <meta name="author" content="Hexrotor">
+    
+    <title>
+        
+            使用Android手机(rooted)模拟USB或CD-ROM设备来引导电脑启动 |
+        
+        沐源の记事本
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://img.icons8.com/ios-filled/50/null/benzene-ring.png">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/v5-font-face.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/duotone.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/brands.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/solid.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/css2.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"hexrotor.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"https://avatars.githubusercontent.com/u/45112661","favicon":"https://img.icons8.com/ios-filled/50/null/benzene-ring.png","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"/images/view_light.jpg","dark":"/images/girl_dark.jpg"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"Welcome here!<br><p id=\"hitokoto\">你是🤔很重要的人🥰，不能忘记的人😍，你的名字是🧐...想不起来了😭</p>"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"0.3.5"};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    <!-- Aplayer debug only -->
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"> 
+    <script src="https://fastly.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script> 
+    <script src="https://fastly.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script> 
+    <!-- live 2D-->
+    <script src="https://fastly.jsdelivr.net/gh/Hexrotor/live2d-widget@latest/autoload.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+    
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                沐源の记事本
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+            <div class="article-title">
+                <span class="title-hover-animation"><h1 style="font-size:2rem; font-weight: bold; margin: 10px 0;">使用Android手机(rooted)模拟USB或CD-ROM设备来引导电脑启动</h1></span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="https://avatars.githubusercontent.com/u/45112661">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Hexrotor</span>
+                            
+                                <span class="author-label">hex</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-duotone fa-pen-line"></i>&nbsp;
+        <span class="pc">2022-12-24 20:44:42</span>
+        <span class="mobile">2022-12-24 20:44</span>
+    </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>最近老爸和我说他那边电脑老是启动时显英文字母，我一看就知道是硬盘快不行了，果断下单买了块机械。</p>
+<p>今天硬盘倒是到了，我却发现我U盘忘在学校了，家里居然一个U盘都没有，这咋装系统呢？</p>
+<p>我忽然想到以前在酷安上看见过一个大佬的帖子，用Android手机能模拟U盘来引导启动。</p>
+<p>搜索了下，软件名字叫<a class="link"   target="_blank" rel="noopener" href="https://www.drivedroid.io/" >Drivedroid<i class="fas fa-external-link-alt"></i></a>，看上去很久没更新了。我以前用一台小米2测试成功过，但那台机子尾插有问题，传数据很容易中断。我翻出了我的小米5，准备尝试一波。官网的changelog写着软件最新版Target API是Android 9，我米5是10，应该问题不大，先下载安装看看。</p>
+<p>进入软件，会请求root权限，让你设置存放镜像的目录，这些步骤都没什么说的，重点在于后面。先将手机连上电脑，然后选择USB模式为文件传输。回到软件，进入这个页面：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/drivedroid_setup.jpg"
+                      alt="Setup"
+                ></p>
+<p>这个页面是选择手机USB模拟的模式，这决定了这台手机是否能用于模拟USB&#x2F;CD-ROM设备。大多数手机选第一个就行了，我的米5选第一个会一直Hosting image。这里我选第二个，先往后看：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/drivedroid_setup2.jpg"
+                      alt="Setup"
+                ></p>
+<p>这个页面是问你电脑上有没有显示手机设备。打开资源管理器，选择此电脑，就能看到是否有Android设备。</p>
+<p>如果有，大概是这样的：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/thispc.jpg"
+                      alt="thispc"
+                ></p>
+<p>如果没有，我也不知道为什么，反正我的电脑上也没有，就选择No devices了</p>
+<p>然后下一步，是要尝试用手机来引导电脑启动：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/drivedroid_setup3.jpg"
+                      alt="boot"
+                ></p>
+<p>就是重启电脑，然后选择BIOS启动项，这里不再赘述，不懂的可以搜下。反正是选比较可疑的那项，一般是带”Linux”字样的，选择后BIOS就会开始引导</p>
+<p>如果你的手机引导成功了，那么屏幕上应该会出现Drivedroid的提示说成功了；如果是进了原系统了，或者就亮一行黑字提示重启、找不到设备之类的，那么说明引导失败了，可以在手机屏幕上选择相应的选项，按软件的提示来继续。或者我们可以直接回到之前选择USB SYSTEM那里，继续尝试其他选项。如果还是没法启动，那你的手机可能不支持作为USB&#x2F;CD-ROM设备用于引导，又或者是你的数据线有问题，可以自己多尝试下。</p>
+<p>至于我，我一开始压根没试，直接选的启动成功，进到了软件的主页面：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/drivedroid_main.jpg"
+                      alt="main"
+                ></p>
+<p>这里就可以选自己镜像了，建议选择模式为CD-ROM或Writable USB，镜像存放的目录就是一开始让你选的那个目录。图中我已经存了个win8.1的镜像，写这文的时候PE的镜像还在用毒盘以20KB&#x2F;s的速率下载着。</p>
+<p>最后提一嘴，我认为win8.1比win7更好用。虽然这个系统用的人非常少，但用过Server 2012的都知道，那极低的占用率，还有一些说不出来的地方，总之我认为体验比win7更好。当年win10出来，我用2G的机子跑，卡得批爆。当年win defender的服务我还不会关，一开机给你扫盘，哪个机械顶得住？后来我忍无可忍，开始用虚拟机探索各大系统。对，我在2G内存的机子上用虚拟机跑各大系统，又是win8又是ubuntu又是Android x86系列的，虚拟机上觉得行就往物理机上装。我甚至纯Deepin系统用过一段时间，但因为内存不够而经常卡死，现在回想起来难怪当年硬盘会废得那么快。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：使用Android手机(rooted)模拟USB或CD-ROM设备来引导电脑启动</li>
+        <li>本文作者：Hexrotor</li>
+        <li>创建时间：2022-12-24 20:44:42</li>
+        <li>
+            本文链接：https://hexrotor.github.io/2022/12/24/drivedroid/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+
+            
+                <div class="article-nav">
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2022/12/20/video-tips/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">视频小技巧</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                <i class="fas fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div style="font-size: 1.3rem;margin-top: 0; margin-bottom: 0.8rem; transition-duration: 0.1s;"><i class="fa-solid fa-list"></i> <strong>目录</strong></div>
+        
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Hexrotor</a>
+        </div>
+        
+            <script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv">
+                        总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v0.3.5</a>
+        </div>
+        
+        
+    </div>
+    <link rel="stylesheet" href="//evan.beee.top/css/waline.css"/>
+    <script src="//evan.beee.top/js/waline.js"></script>
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/regular.min.css">
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fa-duotone fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/utils.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/main.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/header-shrink.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/back2top.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/local-search.js"></script>
+
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/code-copy.js"></script>
+
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/left-side-toggle.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/libs/anime.min.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<div class="aplayer" data-id="7637965554" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="true" muted></div>
+</body>
+</html>

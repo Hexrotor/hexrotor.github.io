@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="Hexo Theme Redefine">
+    <meta name="author" content="Hexrotor">
+    
+    <title>
+        
+            博客搭建 |
+        
+        沐源の记事本
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://img.icons8.com/ios-filled/50/null/benzene-ring.png">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/v5-font-face.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/duotone.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/brands.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/solid.min.css">
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/css2.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"hexrotor.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"https://avatars.githubusercontent.com/u/45112661","favicon":"https://img.icons8.com/ios-filled/50/null/benzene-ring.png","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"/images/view_light.jpg","dark":"/images/girl_dark.jpg"},"title_color":{"light":"#fff","dark":"#d1d1b6"},"description":"Welcome here!<br><p id=\"hitokoto\">你是🤔很重要的人🥰，不能忘记的人😍，你的名字是🧐...想不起来了😭</p>"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true},"pjax":{"enable":true},"lazyload":{"enable":true},"version":"0.3.5"};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    <!-- Aplayer debug only -->
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"> 
+    <script src="https://fastly.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script> 
+    <script src="https://fastly.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script> 
+    <!-- live 2D-->
+    <script src="https://fastly.jsdelivr.net/gh/Hexrotor/live2d-widget@latest/autoload.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="pjax-progress-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+    
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                沐源の记事本
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+            <div class="article-title">
+                <span class="title-hover-animation"><h1 style="font-size:2rem; font-weight: bold; margin: 10px 0;">博客搭建</h1></span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="https://avatars.githubusercontent.com/u/45112661">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Hexrotor</span>
+                            
+                                <span class="author-label">hex</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-duotone fa-pen-line"></i>&nbsp;
+        <span class="pc">2022-12-15 09:42:26</span>
+        <span class="mobile">2022-12-15 09:42</span>
+    </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <p>更新于2022-12-16 22:17</p>
+<p>以前搭建过博客和Onedrive资源站。资源站是一键式搭建的，但博客是用一个静态网页完全自己手动编辑的，当时不懂博客框架这种东西。这次搭博客我选择用Github+Hexo搭建。域名暂时懒得买了，就用Github Page凑合下。</p>
+<p>都是照着教程来的，过程没什么写的，这里简单写一下遇到的坑。</p>
+<h2 id="WSL与Windows共用PATH"><a href="#WSL与Windows共用PATH" class="headerlink" title="WSL与Windows共用PATH"></a>WSL与Windows共用PATH</h2><p>安装Nodejs时发现的，因为我Windows和WSL里都装了Nodejs，而WSL的$PATH中居然包含Windows的PATH，导致我在WSL中无法正常运行npm。不是很理解这种机制到底有什么意义。</p>
+<p>解决方案：编辑&#x2F;etc&#x2F;wsl.conf，添加如下字段</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[interop]</span><br><span class="line">appendWindowsPath=false</span><br></pre></td></tr></table></figure></div>
+
+<p>然后管理员运行PowerShell，执行如下命令以重启WSL</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">net stop LxssManager; net start LxssManager</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Live2D"><a href="#Live2D" class="headerlink" title="Live2D"></a>Live2D</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/xtxnbj.jpg"
+                     
+                ></p>
+<p>在电脑端访问我的博客，会加载一个Live2D小人。这玩意儿我很早以前在第一个博客里放过，但是当时完全是静态Html，直接引用一条js即可。现在我使用Hexo，页面是根据主题自动生成的，如何插入js？</p>
+<p>主题生成页面时肯定有某些规则文件。研究了一番，发现是在主题根目录的layout文件夹中(仅对于我的主题”redefine”而言)，里面有很多ejs文件，记录了生成页面的规则。找到head.ejs文件添加&lt;script&gt;代码即可。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/post_imgs/live2djs.jpg"
+                     
+                ></p>
+<p>我当年弄网页Live2D就是想要放上血小板那个模型，但当年怎么都找不到，而且技术也不过关。现在看来，这个Live2D接口要自己搭后端，否则就只能用别人的老接口，用现有的模型。最近期末了比较忙没时间整了，先挖个坑以后来填。</p>
+<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p>代码块的默认字体太丑了，换成Consolas了，也是靠修改主题文件中的highlight.styl配置，把font-family参数全部修改。</p>
+<p>Mozilla还有个页面可以在线调试字体配置：<a class="link"   target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family" >https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family<i class="fas fa-external-link-alt"></i></a></p>
+<h2 id="网站源码"><a href="#网站源码" class="headerlink" title="网站源码"></a>网站源码</h2><p>和我想的不一样，网页的部署是Hexo自动完成的，生成的网页和源码完全是两回事，所以还需要新开一个仓库来保存源码。但是感觉好麻烦，每次都要执行好几次命令，而且我node_module放在项目文件夹里的，git扫描要挺久的。后续想尝试下用Action，push源码后自动运行Hexo生成网页。</p>
+<h2 id="Github-Action-自动布署-Hexo"><a href="#Github-Action-自动布署-Hexo" class="headerlink" title="Github Action 自动布署 Hexo"></a>Github Action 自动布署 Hexo</h2><p>参考了这篇文章：<a class="link"   target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/170563000" >https://zhuanlan.zhihu.com/p/170563000<i class="fas fa-external-link-alt"></i></a></p>
+<p>简单说一下结构。我上传的源码中包含NodeModule和Hexo文件，所以在Action中直接用命令行调用即可。Hexo依赖Git来推送布署网站，所以要生成一对密钥给Git用。当我push源码到仓库时，workflow被触发，在云端Action上clone我的网站源码并执行Hexo，这样就能更新我的网站了。</p>
+<p>还有个坑没搞明白，Action上运行Hexo布署网站后，仓库的git log只剩两条了，而我在本地布署并不会这样，<del>猜测和clone --depth&#x3D;1有关</del>(没有关系)。</p>
+<h2 id="Aplayer"><a href="#Aplayer" class="headerlink" title="Aplayer"></a>Aplayer</h2><p>网页左下角的音乐播放器是Aplayer实现的，参考了这篇文章<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_58068682/article/details/116612364" >https://blog.csdn.net/weixin_58068682&#x2F;article&#x2F;details&#x2F;116612364<i class="fas fa-external-link-alt"></i></a></p>
+<p>这篇文章中使用的Hexo主题是Butterfly，和我的并不一样。不过我的主题也支持pjax，应该是能实现全局音乐播放的，最后折腾了一番才把我的整好。</p>
+<p>遇到一个坑：Aplayer的&lt;div&gt;代码一开始是放footer的，但一切换页面左下角播放器就消失了，音乐倒是还在放。然后思考了一下决定把代码放body里，于是修改layout.ejs，成功。</p>
+<h2 id="Jpegoptim"><a href="#Jpegoptim" class="headerlink" title="Jpegoptim"></a>Jpegoptim</h2><p>因为博客采用Github Page，所以访问速度有够慢的，live2D经常加载不出来(倒是和Page无关)。考虑到后期上的图可能比较多，不可能每次都手动压缩，我设置了jpg压缩程序，使用的是Jpegoptim，配合find就能实现批量操作。另外，每次加图片都要跑到主题module文件夹里去，因为生成网页源码就从那个地方加载，不知道怎么调，干脆就写了个shell命令从外面文件夹复制图片进去，这样加图片会比较方便。</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find ./public/images/post_imgs/ -not -iname &quot;*_raw.jpg&quot; -not -iname &quot;*_raw.jpeg&quot; -iname &quot;*.jpg&quot; -o -iname &quot;*.jpeg&quot; | xargs jpegoptim -m 80</span><br></pre></td></tr></table></figure></div>
+
+<p>上述代码为设置jpg质量为80，jpegoptim会默认跳过一些不需要优化压缩的图片。另外这个优化并不是对原图片进行修改，而是对hexo g之后生成的public文件夹中图片进行修改，原图能得到比较妥善的保管。文件名最后带有_raw的jpg&#x2F;jpeg图片不会被压缩。</p>
+<p>后续待更新</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：博客搭建</li>
+        <li>本文作者：Hexrotor</li>
+        <li>创建时间：2022-12-15 09:42:26</li>
+        <li>
+            本文链接：https://hexrotor.github.io/2022/12/15/first_blog/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2022/12/20/video-tips/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                <i class="fas fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">视频小技巧</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div style="font-size: 1.3rem;margin-top: 0; margin-bottom: 0.8rem; transition-duration: 0.1s;"><i class="fa-solid fa-list"></i> <strong>目录</strong></div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WSL%E4%B8%8EWindows%E5%85%B1%E7%94%A8PATH"><span class="nav-number">1.</span> <span class="nav-text">WSL与Windows共用PATH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Live2D"><span class="nav-number">2.</span> <span class="nav-text">Live2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E4%BD%93"><span class="nav-number">3.</span> <span class="nav-text">字体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%AB%99%E6%BA%90%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">网站源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Github-Action-%E8%87%AA%E5%8A%A8%E5%B8%83%E7%BD%B2-Hexo"><span class="nav-number">5.</span> <span class="nav-text">Github Action 自动布署 Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Aplayer"><span class="nav-number">6.</span> <span class="nav-text">Aplayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jpegoptim"><span class="nav-number">7.</span> <span class="nav-text">Jpegoptim</span></a></li></ol>
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Hexrotor</a>
+        </div>
+        
+            <script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv">
+                        访问人数&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv">
+                        总访问量&nbsp;<span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v0.3.5</a>
+        </div>
+        
+        
+    </div>
+    <link rel="stylesheet" href="//evan.beee.top/css/waline.css"/>
+    <script src="//evan.beee.top/js/waline.js"></script>
+    <link rel="stylesheet" href="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/css/regular.min.css">
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fa-duotone fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/utils.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/main.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/header-shrink.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/back2top.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/local-search.js"></script>
+
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/code-copy.js"></script>
+
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/left-side-toggle.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/libs/anime.min.js"></script><script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/toc.js"></script>
+    
+</div>
+
+
+    <script src="//evan.beee.top/projects/hexo-theme-redefine/v0.3.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            REDEFINE.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            REDEFINE.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            REDEFINE.refresh();
+        });
+    });
+</script>
+
+
+
+<div class="aplayer" data-id="7637965554" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="true" muted></div>
+</body>
+</html>
