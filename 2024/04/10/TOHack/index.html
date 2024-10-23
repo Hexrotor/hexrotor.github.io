@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Hexrotor">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://hexrotor.github.io/2024/04/10/tohack/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="没想到自己也有一天能给玩的游戏写挂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3D 坦克手游自瞄挂开发">
+<meta property="og:url" content="https://hexrotor.github.io/2024/04/10/TOHack/index.html">
+<meta property="og:site_name" content="Hexrotor的博客">
+<meta property="og:description" content="没想到自己也有一天能给玩的游戏写挂">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_store.webp">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_gkd.png.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_jadx1.png.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_jadx_striker.png.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_frida_log.webp">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_rocket.webp">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_interrapt.webp">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_lose.webp">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_scop.webp">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_scop_no_inter.webp">
+<meta property="article:published_time" content="2024-04-10T16:59:20.000Z">
+<meta property="article:modified_time" content="2024-10-23T14:07:49.265Z">
+<meta property="article:author" content="Hexrotor">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Xposed">
+<meta property="article:tag" content="Frida">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_store.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+    <meta name="theme-color" content="#377ea8">
+    <link rel="shortcut icon" href="/images/favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            3D 坦克手游自瞄挂开发 -
+        
+        沐源の记事本
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+        
+            
+    
+            
+    
+            
+                
+                    <!-- require APlayer --><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script data-swup-reload-script src="https://fastly.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+                
+    
+            
+                
+                    <!-- require MetingJS --><script data-swup-reload-script src="https://fastly.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+                
+    
+            
+                
+                    <!-- live 2D --><script data-swup-reload-script src="https://fastly.jsdelivr.net/gh/Hexrotor/live2d-widget@latest/autoload.js"></script>
+                
+    
+            
+                
+                    <!-- firework --><script data-swup-reload-script src="/js/plugins/fireworks.js"></script>
+                
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"hexrotor.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":["Hex"]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":"Consolas, 'Liberation Mono', Menlo, 'Microsoft YaHei'","url":null}},"toc":{"enable":true,"max_depth":6,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#377ea8","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/view_light.avif","dark":"https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/girl_dark.avif"},"title":"Welcome here!","subtitle":{"text":["HexrotorのBlog","沐源の记事本"],"hitokoto":{"enable":true,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#fff"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/Hexrotor","instagram":null,"zhihu":null,"twitter":null,"email":"ts_studio@foxmail.com","bilibili":"https://space.bilibili.com/37856989/"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.4.4","navbar":{"auto_hide":true,"color":{"left":"#5c321491","right":"#1b668380","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Github":"https://github.com/Hexrotor/blogsrc","Friends":"/links/"}}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/12/15 09:42:26"};
+    Global.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="https://hexrotor.github.io/">
+                
+                沐源の记事本
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-tags"></i>
+                                        
+                                        标签
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-folder"></i>
+                                        
+                                        分类
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        关于&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/about/">ME
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/Hexrotor/blogsrc">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/links/">友情链接
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/tags/"  >
+                             
+                                
+                                    <i class="fa-solid fa-tags"></i>
+                                
+                                标签
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/categories/"  >
+                             
+                                
+                                    <i class="fa-solid fa-folder"></i>
+                                
+                                分类
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                关于&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/about/">ME</a>
+                            </li>
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/Hexrotor/blogsrc">GITHUB</a>
+                            </li>
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/links/">友情链接</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                
+                
+                <img src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_cover.jpg.avif" alt="3D 坦克手游自瞄挂开发" class="max-w-none"/>
+                
+                <h1 class="article-title-cover">3D 坦克手游自瞄挂开发</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://avatars.githubusercontent.com/u/45112661">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Hexrotor</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-04-11 00:59:20</span>
+        <span class="mobile">2024-04-11 00:59:20</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-10-23 22:07:49</span>
+            <span class="mobile">2024-10-23 22:07:49</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Android/">Android</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Xposed/">Xposed</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Frida/">Frida</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.1k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>8 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <p>3D 坦克是一个多人在线游戏，玩家操作自己的坦克进行杀敌、拔旗、站点等活动，整个游戏偏科幻类型</p>
+<p>某日突然发现其手游的客户端居然没有任何防护，故心血来潮就想试试能不能做出大名鼎鼎的自瞄挂，过程比较曲折，但是结果却有惊喜。</p>
+<h3 id="前置信息介绍"><a href="#前置信息介绍" class="headerlink" title="前置信息介绍"></a>前置信息介绍</h3><p>在该游戏中，所谓的自瞄指的是长时间瞄准类炮塔的锁定功能，而不是仿真坦克游戏那种摆角度。比如有个炮叫火箭炮，在瞄准锁定敌人一定时间后，它可以发射出一长串追踪火箭，伤害非常可观。但是其瞄准锁定的过程往往会因为敌人的走位或者队友的阻挡被中断。其具体效果可以查看<a class="link"   target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Zs411E7h7/?share_source=copy_web&vd_source=f225f0bc3ad1daf1caa03ae6fde71bfe&t=186" >该视频 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>3分6秒处。</p>
+<p>为了打破这个限制，曾经国外有很多大佬开发过自瞄挂，使该炮的瞄准不会中断，瞄一下就能稳定地发射出火箭。</p>
+<h3 id="寻找关键函数"><a href="#寻找关键函数" class="headerlink" title="寻找关键函数"></a>寻找关键函数</h3><p>因为是 Android 端所以理所当然地使用 Frida 和 Xposed 这两个工具。Frida 进行 debug，然后移植到 Xposed。</p>
+<p>进入游戏，先随便点点。可以很明显地看出来，这个游戏的界面用是 Android 控件，因为有那种很明显的Android 点击动画</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_store.webp"
+                     
+                ></p>
+<p>使用布局查看工具也能证实这个猜想</p>
+<p>布局查看工具：GKD <a class="link"   target="_blank" rel="noopener" href="https://gkd.li/guide/" >https://gkd.li/guide/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>在该应用的高级模式中打开悬浮窗服务，手动保存当前游戏 Activity 快照</p>
+<p>然后在 Web 端查看布局抓取结果：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_gkd.png.avif"
+                     
+                ></p>
+<p>游戏战斗界面有瞄准 button，抓取得到其 id 为 <code>right_shot_button</code>，随后可以在 jadx 中搜索该关键词</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_jadx1.png.avif"
+                     
+                ></p>
+<p>定位到相关代码后，进行简单交叉引用查找，可以发现很多调用都是在 alternativa 包里面。已知火箭炮的英文名为 Striker，jadx 中直接搜索，可以发现很多 alternativa 的用例，看来该包大概率是游戏逻辑处理部分</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_jadx_striker.png.avif"
+                     
+                ></p>
+<p>最终也是经过一番翻找，发现相关的逻辑处理就在 <code>lockTarget</code> 函数中</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">alternativa.tanks.battle.weapons.types.striker.components;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> <span class="comment">// alternativa.tanks.battle.weapons.aiming.AimingWeapon</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">lockTarget</span><span class="params">(<span class="meta">@NotNull</span> LockResult lockResult, <span class="meta">@Nullable</span> Long l)</span> &#123;</span><br><span class="line">        StrikerTargetingSystem strikerTargetingSystem;</span><br><span class="line">        Intrinsics.checkNotNullParameter(lockResult, <span class="string">&quot;lockResult&quot;</span>);</span><br><span class="line">        <span class="type">GunParamsCalculator</span> <span class="variable">gunParamsCalculator</span> <span class="operator">=</span> <span class="built_in">this</span>.gunParamsCalculator;</span><br><span class="line">        <span class="keyword">if</span> (gunParamsCalculator == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;gunParamsCalculator&quot;</span>);</span><br><span class="line">            gunParamsCalculator = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">GlobalGunParams</span> <span class="variable">laserParams</span> <span class="operator">=</span> gunParamsCalculator.getLaserParams();</span><br><span class="line">        <span class="type">StrikerTargetingSystem</span> <span class="variable">strikerTargetingSystem2</span> <span class="operator">=</span> <span class="built_in">this</span>.targetingSystem;</span><br><span class="line">        <span class="keyword">if</span> (strikerTargetingSystem2 == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;targetingSystem&quot;</span>);</span><br><span class="line">            strikerTargetingSystem2 = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        strikerTargetingSystem2.setPreferredTarget(getPreferredTarget(l));</span><br><span class="line">        <span class="type">StrikerTargetingSystem</span> <span class="variable">strikerTargetingSystem3</span> <span class="operator">=</span> <span class="built_in">this</span>.targetingSystem;</span><br><span class="line">        <span class="keyword">if</span> (strikerTargetingSystem3 == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;targetingSystem&quot;</span>);</span><br><span class="line">            strikerTargetingSystem = <span class="literal">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            strikerTargetingSystem = strikerTargetingSystem3;</span><br><span class="line">        &#125;</span><br><span class="line">        TargetingSystem.DefaultImpls.target$<span class="keyword">default</span>(strikerTargetingSystem, laserParams, targetingResult, <span class="literal">false</span>, <span class="number">4</span>, <span class="literal">null</span>);</span><br><span class="line">        <span class="type">StrikerTargetingSystem</span> <span class="variable">strikerTargetingSystem4</span> <span class="operator">=</span> <span class="built_in">this</span>.targetingSystem;</span><br><span class="line">        <span class="keyword">if</span> (strikerTargetingSystem4 == <span class="literal">null</span>) &#123;</span><br><span class="line">            Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;targetingSystem&quot;</span>);</span><br><span class="line">            strikerTargetingSystem4 = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        strikerTargetingSystem4.setPreferredTarget(<span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (targetingResult.hasTargetHit()) &#123;</span><br><span class="line">            <span class="type">RayHit</span> <span class="variable">singleHit</span> <span class="operator">=</span> targetingResult.getSingleHit();</span><br><span class="line">            <span class="type">Object</span> <span class="variable">data</span> <span class="operator">=</span> singleHit.getShape().getBody().getData();</span><br><span class="line">            <span class="keyword">if</span> (data == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>(<span class="string">&quot;null cannot be cast to non-null type alternativa.tanks.entity.BattleEntity&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">BattleEntity</span> <span class="variable">battleEntity</span> <span class="operator">=</span> (BattleEntity) data;</span><br><span class="line">            <span class="type">long</span> <span class="variable">id</span> <span class="operator">=</span> ((TankComponent) battleEntity.getComponent(Reflection.getOrCreateKotlinClass(TankComponent.class))).getId();</span><br><span class="line">            <span class="keyword">if</span> ((l == <span class="literal">null</span> || l.longValue() == id) &amp;&amp; isActiveTank(battleEntity) &amp;&amp; !BattleUtilsKt.isSameTeam(TankComponentKt.getTeamType(getEntity()), TankComponentKt.getTeamType(battleEntity))) &#123;</span><br><span class="line">                BattleUtilsKt.globalToLocal(singleHit.getShape().getBody(), singleHit.getPosition(), localLockPoint);</span><br><span class="line">                lockResult.update(id, singleHit.getPosition(), localLockPoint);</span><br><span class="line">                <span class="built_in">this</span>.lockingTargetUpdateMessage.init(battleEntity, targetingResult.getDirection(), lockResult);</span><br><span class="line">                getEntity().send(<span class="built_in">this</span>.lockingTargetUpdateMessage);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.stateLogic <span class="keyword">instanceof</span> RegainLockState) &#123;</span><br><span class="line">            <span class="built_in">this</span>.lockingRegainUpdateMessage.getDirection().init(targetingResult.getDirection());</span><br><span class="line">            getEntity().send(<span class="built_in">this</span>.lockingRegainUpdateMessage);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="配合-Frida-分析"><a href="#配合-Frida-分析" class="headerlink" title="配合 Frida 分析"></a>配合 Frida 分析</h3><div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title class_">StrikerWeapon</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;alternativa.tanks.battle.weapons.types.striker.components.StrikerWeapon&quot;</span>);</span><br><span class="line"><span class="title class_">StrikerWeapon</span>[<span class="string">&quot;lockTarget&quot;</span>].<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">lockResult, l</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`StrikerWeapon.lockTarget is called: lockResult=<span class="subst">$&#123;lockResult&#125;</span>, l=<span class="subst">$&#123;l&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">let</span> result = <span class="variable language_">this</span>[<span class="string">&quot;lockTarget&quot;</span>](lockResult, l);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`StrikerWeapon.lockTarget result=<span class="subst">$&#123;result&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_frida_log.webp"
+                     
+                ></p>
+<p>通过分析得知，该函数传入的 lockResult 是上一次扫描的目标对象，<code>l</code> 传入的是目前的瞄准对象 ID ，如果没有对象就是 <code>null</code> ，返回 <code>true</code> 则允许继续瞄准充能，返回 <code>false</code> 则不允许瞄准充能</p>
+<p>所以我一开始直接 hook 让该函数永远 <code>return true</code>，但实际上这会带来很大的问题。首先如果返回永真，那么无瞄准对象时，也会进行瞄准充能。而且这个函数只会在上一次返回了 false 的情况下更新瞄准对象，如果返回永真，那么瞄准对象永远不会更新，也就是永远为 null。瞄准完成后程序会调用一个 shootGuidedRocket 函数来创建追踪火箭，如果没有瞄准对象，就没有对应的坐标值用于创建追踪火箭。</p>
+<p>效果就如图中，有开火动画，但是没有火箭飞出</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_rocket.webp"
+                     
+                ></p>
+<p>经过一番思索后我将其设置为 <code>return result || l!=null</code></p>
+<p>也就是一旦传入的ID有效就返回true，但这也会有小问题：瞄准过程中目标如果死了，仍然会继续充能，因为目标死了，ID并不会失效，目标死了但是你依旧发射了火箭，很容易被人看出来开挂，这不是我想要的</p>
+<p>并且这种方式每次瞄准都需要敌人露头，实际上体验不佳</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_interrapt.webp"
+                     
+                ></p>
+<p>为了解决目标死亡后继续充能的问题，我主动调用了游戏内部的 <code>isValidTarget</code> 函数进行 ID 对象解析，并且解析的是上一次的瞄准结果，只要上一次的瞄准结果的对象依旧有效，就使其 <code>return true</code>。</p>
+<div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用于检测 Target 是否有效的函数，目标死亡、不存在都会返回 false</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValidTarget</span><span class="params">(<span class="type">long</span> j)</span> &#123; </span><br><span class="line">    <span class="type">GameMode</span> <span class="variable">gameMode</span> <span class="operator">=</span> <span class="built_in">this</span>.gameMode;</span><br><span class="line">    <span class="keyword">if</span> (gameMode == <span class="literal">null</span>) &#123; </span><br><span class="line">        Intrinsics.throwUninitializedPropertyAccessException(<span class="string">&quot;gameMode&quot;</span>);</span><br><span class="line">        gameMode = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">BattleEntity</span> <span class="variable">tank</span> <span class="operator">=</span> gameMode.getTanksOnField().getTank(j);</span><br><span class="line">    <span class="keyword">if</span> (tank == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> isActiveTank(tank); &#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>Frida Script：</p>
+<div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">StrikerWeapon</span>[<span class="string">&quot;lockTarget&quot;</span>].<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">lockResult, l</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> result = <span class="variable language_">this</span>[<span class="string">&quot;lockTarget&quot;</span>](lockResult, l);</span><br><span class="line">    <span class="comment">// console.log(&quot;============================&quot;);</span></span><br><span class="line">    <span class="comment">// console.log(`StrikerWeapon.lockTarget result=$&#123;result&#125;`);</span></span><br><span class="line">    <span class="comment">//console.log(`StrikerWeapon.lockTarget is called: lockResult=$&#123;lockResult&#125;, l=$&#123;l&#125;, result: $&#123;l!=null&#125;`);</span></span><br><span class="line">    <span class="comment">//console.log(&quot;lockResult.getTargetId: &quot;, lockResult.getTargetId());</span></span><br><span class="line">    <span class="comment">//console.log(&quot;vaild: &quot;, this[&quot;isValidTarget&quot;](parseInt(lockResult.getTargetId())));</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>[<span class="string">&quot;isValidTarget&quot;</span>](<span class="built_in">parseInt</span>(lockResult.<span class="title function_">getTargetId</span>())) || result;</span><br><span class="line">    <span class="comment">//return result || (l!=null);</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p>这样既避免了目标死亡后继续瞄准，又能实现瞄准记忆功能，在这种修改下，瞄准的结果不会丢失，使得我可以在任意位置进行瞄准，当然了打不打得到是另一回事</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_no_lose.webp"
+                     
+                ></p>
+<p>但遗憾的是，服务器端似乎有外挂检测，检测逻辑不清楚，有可能是瞄准过程有遮挡或者没对准，然后发射出去就只有第一发有伤害，这样的话这个挂局限性就很大了，甚至可以说是反向优化。</p>
+<p>但是，我突然想起来还有一个炮：</p>
+<p>这个炮塔向天上发射导弹，并且只要求一开始能瞄到人，瞄准过程无视掩体，只要求对准目标</p>
+<p>虽然这个炮原版的瞄准逻辑就很强了，但是还是需要敌人和我同时露头，敌人不露头我就没法瞄，我一露头就有被打的风险，所以还是有优化空间</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_scop.webp"
+                     
+                ></p>
+<p>经过查看发现这个炮的瞄准函数都是继承的同一套 <code>lockTarget</code>，所以直接套上去就能用</p>
+<div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title class_">ScorpioWeapon</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;alternativa.tanks.battle.weapons.types.scorpio.components.ScorpioWeapon&quot;</span>);</span><br><span class="line"><span class="title class_">ScorpioWeapon</span>[<span class="string">&quot;lockTarget&quot;</span>].<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">lockResult, l</span>) &#123;</span><br><span class="line">    <span class="comment">// console.log(&quot;============================&quot;);</span></span><br><span class="line">    <span class="comment">// console.log(`ScorpioWeapon.lockTarget is called: lockResult=$&#123;lockResult&#125;, l=$&#123;l&#125;, result: $&#123;l!=null&#125;`);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> result = <span class="variable language_">this</span>[<span class="string">&quot;lockTarget&quot;</span>](lockResult, l);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;lockResult.getTargetId: &quot;</span>, lockResult.<span class="title function_">getTargetId</span>());</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;vaild: &quot;</span>, <span class="variable language_">this</span>[<span class="string">&quot;isValidTarget&quot;</span>](<span class="built_in">parseInt</span>(lockResult.<span class="title function_">getTargetId</span>())));</span><br><span class="line">    <span class="comment">//backtrace</span></span><br><span class="line">    <span class="comment">//console.log(Java.use(&quot;android.util.Log&quot;).getStackTraceString(Java.use(&quot;java.lang.Exception&quot;).$new()));</span></span><br><span class="line">    <span class="comment">//console.log(`ScorpioWeapon.lockTarget result=$&#123;result&#125;`);</span></span><br><span class="line">    <span class="keyword">return</span> result || <span class="variable language_">this</span>[<span class="string">&quot;isValidTarget&quot;</span>](<span class="built_in">parseInt</span>(lockResult.<span class="title function_">getTargetId</span>()));</span><br><span class="line">    <span class="comment">//return result || (l!=null) ;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p>然后使用效果就变成了：只要瞄过一次就能在任何地方重新瞄，无视任何掩体，只要求能对准就行</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/tohack_scop_no_inter.webp"
+                     
+                ></p>
+<p>由于这个炮的导弹向上飞，我只要选定一个合适的距离，导弹就可以跨过掩体打中，简直太超模了</p>
+<h3 id="移植-Xposed"><a href="#移植-Xposed" class="headerlink" title="移植 Xposed"></a>移植 Xposed</h3><p>剩下的任务就是将 Frida 代码转化为 Xposed 模块，代码编写思路和 Frida 基本一致，只是换成了 Xposed API，另外要写个简单的 Activity 来控制模块的功能开关，完整代码在我Github，有兴趣可以自己查阅。</p>
+<p>最后重要提示，外挂是一种破坏游戏平衡、影响玩家体验的行为，本文仅用于技术交流，请不要使用外挂在公开战场进行游戏，否则后果自负</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 3D 坦克手游自瞄挂开发</li>
+        <li><strong>作者:</strong> Hexrotor</li>
+        <li><strong>创建于
+                :</strong> 2024-04-11 00:59:20</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-10-23 22:07:49
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://hexrotor.github.io/2024/04/10/TOHack/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/Android/">#Android</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Xposed/">#Xposed</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Frida/">#Frida</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2024/06/01/Linux-Mint-Zephyrus/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Linux Mint - Linux 主系统 + Windows 虚拟机双系统方案踩坑</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/03/14/Tenda-CVE-2018-18708/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Tenda 路由器 CVE-2018-18708 漏洞复现</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5ccd740d2c03314bbeec',
+                    clientSecret: '1c43b03d3070a4c0b688a91e470b47011c0e0dc1',
+                    repo: 'blogsrc',
+                    owner: 'Hexrotor',
+                    admin: ['Hexrotor'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">3D 坦克手游自瞄挂开发</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E4%BB%8B%E7%BB%8D"><span class="nav-text">前置信息介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E5%85%B3%E9%94%AE%E5%87%BD%E6%95%B0"><span class="nav-text">寻找关键函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E5%90%88-Frida-%E5%88%86%E6%9E%90"><span class="nav-text">配合 Frida 分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E6%A4%8D-Xposed"><span class="nav-text">移植 Xposed</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 1s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">HexrotorのBlog</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.4.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex justify-center items-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.hooks.on("page:view", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+<canvas class="fireworks" style="position:fixed;left:0;top:0;z-index:1;pointer-events:none;"></canvas>
+<meting-js
+    server="netease"
+    type="playlist"
+    id="7637965554"
+	fixed="true"
+	showlrc="false"
+	lrc-type="0"
+	muted>
+</meting-js>
+</body>
+</html>

@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Hexrotor">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://hexrotor.github.io/2023/09/10/hitcon-2023-blade-wp/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="只做了这道题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hitcon 2023 Blade WP">
+<meta property="og:url" content="https://hexrotor.github.io/2023/09/10/hitcon-2023-blade-wp/index.html">
+<meta property="og:site_name" content="Hexrotor的博客">
+<meta property="og:description" content="只做了这道题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_run.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_server_help.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_pwd.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_shell.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_fun_shell_p.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_shell_flag.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_input_flag.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_verify_1.jpg.avif">
+<meta property="og:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_verify_2.jpg.avif">
+<meta property="article:published_time" content="2023-09-10T17:22:27.000Z">
+<meta property="article:modified_time" content="2024-10-23T14:07:49.265Z">
+<meta property="article:author" content="Hexrotor">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Reverse">
+<meta property="article:tag" content="WP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_run.jpg.avif">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+    <meta name="theme-color" content="#377ea8">
+    <link rel="shortcut icon" href="/images/favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Hitcon 2023 Blade WP -
+        
+        沐源の记事本
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+        
+            
+    
+            
+    
+            
+                
+                    <!-- require APlayer --><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script data-swup-reload-script src="https://fastly.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+                
+    
+            
+                
+                    <!-- require MetingJS --><script data-swup-reload-script src="https://fastly.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+                
+    
+            
+                
+                    <!-- live 2D --><script data-swup-reload-script src="https://fastly.jsdelivr.net/gh/Hexrotor/live2d-widget@latest/autoload.js"></script>
+                
+    
+            
+                
+                    <!-- firework --><script data-swup-reload-script src="/js/plugins/fireworks.js"></script>
+                
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"hexrotor.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":["Hex"]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":"Consolas, 'Liberation Mono', Menlo, 'Microsoft YaHei'","url":null}},"toc":{"enable":true,"max_depth":6,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#377ea8","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/view_light.avif","dark":"https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/girl_dark.avif"},"title":"Welcome here!","subtitle":{"text":["HexrotorのBlog","沐源の记事本"],"hitokoto":{"enable":true,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#fff"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/Hexrotor","instagram":null,"zhihu":null,"twitter":null,"email":"ts_studio@foxmail.com","bilibili":"https://space.bilibili.com/37856989/"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.4.4","navbar":{"auto_hide":true,"color":{"left":"#5c321491","right":"#1b668380","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Github":"https://github.com/Hexrotor/blogsrc","Friends":"/links/"}}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/12/15 09:42:26"};
+    Global.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="https://hexrotor.github.io/">
+                
+                沐源の记事本
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-tags"></i>
+                                        
+                                        标签
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-folder"></i>
+                                        
+                                        分类
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        关于&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/about/">ME
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/Hexrotor/blogsrc">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/links/">友情链接
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/tags/"  >
+                             
+                                
+                                    <i class="fa-solid fa-tags"></i>
+                                
+                                标签
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/categories/"  >
+                             
+                                
+                                    <i class="fa-solid fa-folder"></i>
+                                
+                                分类
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                关于&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/about/">ME</a>
+                            </li>
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/Hexrotor/blogsrc">GITHUB</a>
+                            </li>
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/links/">友情链接</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">Hitcon 2023 Blade WP</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://avatars.githubusercontent.com/u/45112661">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Hexrotor</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-09-11 01:22:27</span>
+        <span class="mobile">2023-09-11 01:22:27</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-10-23 22:07:49</span>
+            <span class="mobile">2024-10-23 22:07:49</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/CTF/">CTF</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Reverse/">Reverse</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/WP/">WP</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.8k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>13 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <p>不太会，只做了这一道</p>
+<h3 id="表面行为分析"><a href="#表面行为分析" class="headerlink" title="表面行为分析"></a>表面行为分析</h3><p>首先运行程序，会进入一个交互界面，然后提示可以进入 server 模式，并且 <code>run</code> 之后打印出来一串 opcode</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_run.jpg.avif"
+                     
+                ></p>
+<p>nc 连 server，server 提示连接成功，<code>help</code> 查看指令</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_server_help.jpg.avif"
+                     
+                ></p>
+<p>随后尝试运行这些指令，server 这边直接卡住了，但是 nc 这边出现了乱码</p>
+<p>如图是运行 pwd 出现的乱码：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_pwd.jpg.avif"
+                     
+                ></p>
+<p>由于看不出来是什么，所以上 pwntools 提一下数据得到</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">b&#x27;T]1\xf6\x81\xc6\x00\x10\x00\x00H)\xf4T_jOX\x0f\x05PH\x92H\x83\xc2\x08S_T^j\x01X\x0f\x05U\\A\xff\xe7&#x27;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>有点抽象，难道是 <code>pwd</code> 执行结果加密后的数据表现吗？那么 flag 有可能和这个是同一套加密，那么也许可以先找到这套加密代码，再看看程序中有无藏匿的 flag 加密后数据，从而得到原 flag。但是这个猜想不一定对，我又尝试执行了 <code>ls</code> ，得到的数据和上面的差不多，而且比较短，感觉文件名加密后不可能才这么点长。于是我将其复制到 IDA 里 c 一下，发现这玩意儿是 opcode，疑似是实现其列出的操作的代码，但是这样打印出来不知道干嘛的。</p>
+<p>到这里程序表象已经看不出来什么了，接下来是逆向环节</p>
+<h3 id="程序逆向分析"><a href="#程序逆向分析" class="headerlink" title="程序逆向分析"></a>程序逆向分析</h3><p>IDA 打开能直接找到 <code>main</code> 函数 <code>seccomp_shell::main::hef7e76ec97275895()</code></p>
+<p><code>main</code> 函数中直接能找到关键函数 <code>seccomp_shell::cli::prompt::h56d4b6fe2f13f522(&amp;v5)</code></p>
+<p>由函数名可以推断，这个函数负责处理 cli 界面与指令，有可能是通过类似 <code>switch</code> 的方式来处理指令</p>
+<p>根据经验，这种处理 cli 的函数前面可能会根据终端的环境变量来设置或打印一些初始化内容，所以前面的代码大概率没用，往后翻看看有无 <code>switch</code></p>
+<p>事实证明也确实有：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_shell.jpg.avif"
+                     
+                ></p>
+<p>上图这种 <code>switch</code> 字符串的比较方式不知道是 Rust 编译器干的还是出题人故意这样写的，总之我看着值有点像 ascii 范围就 R 了一下，结果确实是字符。应该是根据用户输入进入相应的函数，那么进 <code>seccomp_shell::shell::prompt::h76cecfe7bd3bdf50(v33)</code> 看看吧</p>
+<p>然后就发现了刚刚打印出来的字符串，看来 server 之后进入的交互就是这个函数负责的：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_fun_shell_p.jpg.avif"
+                     
+                ></p>
+<p>然后继续往下看，发现了爆点</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_shell_flag.jpg.avif"
+                     
+                ></p>
+<p>上图中出现了 <code>flag</code> 命令，我随即启动程序测试</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_input_flag.jpg.avif"
+                     
+                ></p>
+<p>如图直接输 <code>flag</code> 会提示 Incorrect ，随后我在后面加参数运行也不会有报错，猜测就是把 <code>flag</code> 后面的参数拿去验证了。先进 <code>seccomp_shell::shell::verify::h898bf5fa26dafbab(v154, v175[3], v175[5])</code> 函数看看</p>
+<p>verify有点长就不截图了，挑几个部分说一下</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">memcpy</span>(dest, &amp;unk_55DF6DF58920, <span class="number">0x200</span>uLL);</span><br><span class="line"> v52 = <span class="number">64LL</span>;</span><br><span class="line"> v53 = &amp;dest[<span class="number">1</span>];</span><br><span class="line"> <span class="keyword">do</span></span><br><span class="line"> &#123;</span><br><span class="line">   v54 = *(v53 - <span class="number">1</span>);</span><br><span class="line">   <span class="keyword">if</span> ( v54 &gt; <span class="number">0x3F</span> )</span><br><span class="line">     <span class="keyword">goto</span> LABEL_53;</span><br><span class="line">   v55 = tmp_addr[v52 - <span class="number">1</span>];</span><br><span class="line">   tmp_addr[v52 - <span class="number">1</span>] = tmp_addr[v54];</span><br><span class="line">   tmp_addr[v54] = v55;</span><br><span class="line">   v56 = *v53;</span><br><span class="line">   <span class="keyword">if</span> ( *v53 &gt; <span class="number">0x3F</span> )</span><br><span class="line">     <span class="keyword">goto</span> LABEL_53;</span><br><span class="line">   v57 = tmp_addr[v52 - <span class="number">2</span>];</span><br><span class="line">   tmp_addr[v52 - <span class="number">2</span>] = tmp_addr[v56];</span><br><span class="line">   tmp_addr[v56] = v57;</span><br><span class="line">   v53 += <span class="number">2</span>;</span><br><span class="line">   v52 -= <span class="number">2LL</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">while</span> ( v52 );</span><br></pre></td></tr></table></figure></div>
+
+<p><code>tmp_addr</code> 是用户输入，长度为 64。这整个循环是在按照 <code>dest</code> 中的值来将 <code>tmp_addr</code> 的顺序打乱，而这样的循环一共有 5 个，除了每次复制到 <code>dest</code> 中的值不同以外，代码基本相同。并且复制到 <code>dest</code> 的值是常量，而代码的行为也与用户输入值没有任何关系。也就是说，可以将这 5 次打乱看作一次，我们只需要输入一串已知顺序的 64 字节字符串，然后动调得到输出的字符串，就能得到 64 位对应表，在还原 flag 时直接根据表就能还原。</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">v58 = <span class="number">0LL</span>;                                  <span class="comment">// exchange end</span></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v59 = tmp_addr[v58] + <span class="number">1</span>;</span><br><span class="line">      LOWORD(v51) = <span class="number">1</span>;</span><br><span class="line">      LOWORD(v52) = <span class="number">257</span>;</span><br><span class="line">      v60 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">do</span></span><br><span class="line">      &#123;</span><br><span class="line">        v62 = v52;</span><br><span class="line">        LOWORD(v52) = v52 / v59;</span><br><span class="line">        v61 = v62 % v59;</span><br><span class="line">        v63 = v51;</span><br><span class="line">        v51 = v60 - v51 * v52;</span><br><span class="line">        LODWORD(v52) = v59;</span><br><span class="line">        v59 = (v62 % v59);</span><br><span class="line">        v60 = v63;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">while</span> ( v61 );</span><br><span class="line">      v64 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">if</span> ( v63 &gt; <span class="number">0</span> )</span><br><span class="line">        v64 = v63;</span><br><span class="line">      tmp_addr[v58] = ((v64 + (v63 &gt;&gt; <span class="number">15</span>) - v63) / <span class="number">0x101</span>u + v63 + (v63 &gt;&gt; <span class="number">15</span>) + <span class="number">113</span>) ^ <span class="number">0x89</span>;</span><br><span class="line">      v52 = v58 + <span class="number">1</span>;</span><br><span class="line">      v58 = v52;                                <span class="comment">// v58++</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( v52 != <span class="number">64</span> );</span><br></pre></td></tr></table></figure></div>
+
+<p>打乱后是如上的加密，静态分析或动调都可以看出这个加密是以字节为单位的，并且这个加密的运算数似乎也与 flag 的其他位置值没有任何关系。那么有没有可能，我们可以得到一份加密前后的字节对应表，按照表就能将加密后的字节翻译为加密前的字节。</p>
+<p>生成 0~255 的 hex 序列，然后就能粘进IDA里提取加密后的值：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">256</span>, <span class="number">64</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">bytearray</span>(<span class="built_in">range</span>(i, i+<span class="number">64</span>)).<span class="built_in">hex</span>())</span><br></pre></td></tr></table></figure></div>
+
+<p>本来以为就这点，但是拉到后面一看还有个 <code>while ( v8 != 256 );</code> ，而作用范围是刚才的打乱和加密，也就是说这个过程会循环 256 次，问题不大。</p>
+<p>得到的字节对应表与还原脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 动调得到的表</span></span><br><span class="line">s0_255 = [<span class="number">0xFB</span>, <span class="number">0x7B</span>, <span class="number">0x4E</span>, <span class="number">0xBB</span>, <span class="number">0x51</span>, <span class="number">0x15</span>, <span class="number">0x8D</span>, <span class="number">0xDB</span>, <span class="number">0xB0</span>, <span class="number">0xAC</span>, <span class="number">0xA5</span>, <span class="number">0x8E</span>, <span class="number">0xAA</span>, <span class="number">0xB2</span>, <span class="number">0x60</span>, <span class="number">0xEB</span>, <span class="number">0x63</span>, <span class="number">0x5C</span>, <span class="number">0xDE</span>, <span class="number">0x42</span>, <span class="number">0x2B</span>, <span class="number">0xC6</span>, <span class="number">0xA6</span>, <span class="number">0x35</span>, <span class="number">0x30</span>, <span class="number">0x43</span>, <span class="number">0xD6</span>, <span class="number">0x5F</span>, <span class="number">0xBD</span>, <span class="number">0x24</span>, <span class="number">0xB1</span>, <span class="number">0xE3</span>, <span class="number">0x8C</span>, <span class="number">0xA7</span>, <span class="number">0xD5</span>, <span class="number">0x2A</span>, <span class="number">0x7C</span>, <span class="number">0x6D</span>, <span class="number">0x8B</span>, <span class="number">0x17</span>, <span class="number">0x9D</span>, <span class="number">0x83</span>, <span class="number">0xFE</span>, <span class="number">0x69</span>, <span class="number">0x10</span>, <span class="number">0x59</span>, <span class="number">0xA9</span>, <span class="number">0x9E</span>, <span class="number">0x0F</span>, <span class="number">0x1C</span>, <span class="number">0x66</span>, <span class="number">0x97</span>, <span class="number">0x5B</span>, <span class="number">0x61</span>, <span class="number">0xED</span>, <span class="number">0xAD</span>, <span class="number">0xE0</span>, <span class="number">0xDA</span>, <span class="number">0x27</span>, <span class="number">0x06</span>, <span class="number">0x25</span>, <span class="number">0xDC</span>, <span class="number">0x5E</span>, <span class="number">0xE7</span>,</span><br><span class="line">        <span class="number">0x41</span>, <span class="number">0x32</span>, <span class="number">0xD2</span>, <span class="number">0xD9</span>, <span class="number">0x8F</span>, <span class="number">0xEE</span>, <span class="number">0xAF</span>, <span class="number">0x03</span>, <span class="number">0x93</span>, <span class="number">0x3A</span>, <span class="number">0x00</span>, <span class="number">0xA2</span>, <span class="number">0xE1</span>, <span class="number">0xB3</span>, <span class="number">0xEC</span>, <span class="number">0x81</span>, <span class="number">0x9F</span>, <span class="number">0xCA</span>, <span class="number">0x58</span>, <span class="number">0xB7</span>, <span class="number">0x79</span>, <span class="number">0xFD</span>, <span class="number">0x3B</span>, <span class="number">0xA0</span>, <span class="number">0x02</span>, <span class="number">0x0C</span>, <span class="number">0xCB</span>, <span class="number">0xA8</span>, <span class="number">0x80</span>, <span class="number">0xC0</span>, <span class="number">0x16</span>, <span class="number">0x4D</span>, <span class="number">0x2F</span>, <span class="number">0x75</span>, <span class="number">0x71</span>, <span class="number">0x0A</span>, <span class="number">0x04</span>, <span class="number">0x39</span>, <span class="number">0xFF</span>, <span class="number">0xC1</span>, <span class="number">0x9C</span>, <span class="number">0xAB</span>, <span class="number">0xEF</span>, <span class="number">0xA4</span>, <span class="number">0xD8</span>, <span class="number">0xE2</span>, <span class="number">0x14</span>, <span class="number">0xC2</span>, <span class="number">0x6C</span>, <span class="number">0x64</span>, <span class="number">0x1E</span>, <span class="number">0x6B</span>, <span class="number">0x7E</span>, <span class="number">0x99</span>, <span class="number">0x2E</span>, <span class="number">0x09</span>, <span class="number">0x0B</span>, <span class="number">0x86</span>, <span class="number">0x74</span>, <span class="number">0x6A</span>, <span class="number">0xC4</span>, <span class="number">0x2D</span>, <span class="number">0x4F</span>, <span class="number">0xF9</span>,</span><br><span class="line">        <span class="number">0xFA</span>, <span class="number">0x94</span>, <span class="number">0xB6</span>, <span class="number">0x1F</span>, <span class="number">0x89</span>, <span class="number">0x6F</span>, <span class="number">0x5D</span>, <span class="number">0xE8</span>, <span class="number">0xEA</span>, <span class="number">0xB5</span>, <span class="number">0x5A</span>, <span class="number">0x65</span>, <span class="number">0x88</span>, <span class="number">0xC5</span>, <span class="number">0x7F</span>, <span class="number">0x77</span>, <span class="number">0x11</span>, <span class="number">0xCF</span>, <span class="number">0xF1</span>, <span class="number">0x1B</span>, <span class="number">0x3F</span>, <span class="number">0xF4</span>, <span class="number">0x48</span>, <span class="number">0x47</span>, <span class="number">0x12</span>, <span class="number">0xE4</span>, <span class="number">0xBA</span>, <span class="number">0xDF</span>, <span class="number">0xE9</span>, <span class="number">0x62</span>, <span class="number">0x6E</span>, <span class="number">0xB4</span>, <span class="number">0x96</span>, <span class="number">0xCD</span>, <span class="number">0x13</span>, <span class="number">0x53</span>, <span class="number">0x4B</span>, <span class="number">0x28</span>, <span class="number">0xD7</span>, <span class="number">0xD1</span>, <span class="number">0x33</span>, <span class="number">0xB8</span>, <span class="number">0xE6</span>, <span class="number">0x7A</span>, <span class="number">0x2C</span>, <span class="number">0x9B</span>, <span class="number">0x29</span>, <span class="number">0x44</span>, <span class="number">0x52</span>, <span class="number">0xF7</span>, <span class="number">0x20</span>, <span class="number">0xF2</span>, <span class="number">0x31</span>, <span class="number">0xD3</span>, <span class="number">0xB9</span>, <span class="number">0x40</span>, <span class="number">0xD0</span>, <span class="number">0x34</span>, <span class="number">0xF5</span>, <span class="number">0x54</span>, <span class="number">0x1A</span>, <span class="number">0x01</span>, <span class="number">0xA1</span>, <span class="number">0x92</span>,</span><br><span class="line">        <span class="number">0xFC</span>, <span class="number">0x85</span>, <span class="number">0x07</span>, <span class="number">0xBE</span>, <span class="number">0xDD</span>, <span class="number">0xBC</span>, <span class="number">0x19</span>, <span class="number">0xF3</span>, <span class="number">0x36</span>, <span class="number">0xF6</span>, <span class="number">0x72</span>, <span class="number">0x98</span>, <span class="number">0x4C</span>, <span class="number">0x7D</span>, <span class="number">0xC7</span>, <span class="number">0xD4</span>, <span class="number">0x45</span>, <span class="number">0x4A</span>, <span class="number">0x9A</span>, <span class="number">0xC3</span>, <span class="number">0x8A</span>, <span class="number">0xE5</span>, <span class="number">0x50</span>, <span class="number">0x46</span>, <span class="number">0xCC</span>, <span class="number">0x68</span>, <span class="number">0x76</span>, <span class="number">0x67</span>, <span class="number">0xC9</span>, <span class="number">0x0E</span>, <span class="number">0x3C</span>, <span class="number">0x57</span>, <span class="number">0xF0</span>, <span class="number">0x22</span>, <span class="number">0xBF</span>, <span class="number">0x26</span>, <span class="number">0x84</span>, <span class="number">0x0D</span>, <span class="number">0x90</span>, <span class="number">0xA3</span>, <span class="number">0xAE</span>, <span class="number">0x3D</span>, <span class="number">0x1D</span>, <span class="number">0xC8</span>, <span class="number">0x91</span>, <span class="number">0x05</span>, <span class="number">0x87</span>, <span class="number">0x70</span>, <span class="number">0x08</span>, <span class="number">0x73</span>, <span class="number">0x21</span>, <span class="number">0x49</span>, <span class="number">0x55</span>, <span class="number">0x3E</span>, <span class="number">0x37</span>, <span class="number">0x23</span>, <span class="number">0x18</span>, <span class="number">0x56</span>, <span class="number">0xCE</span>, <span class="number">0x82</span>, <span class="number">0x38</span>, <span class="number">0x95</span>, <span class="number">0x78</span>, <span class="number">0xF8</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成对应字典</span></span><br><span class="line">crypto_table = <span class="built_in">dict</span>(<span class="built_in">zip</span>(s0_255,<span class="built_in">range</span>(<span class="number">0x100</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 逆向查表得到原数据</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">data: <span class="built_in">list</span>, table: <span class="built_in">dict</span></span>):</span><br><span class="line">    tmp=[]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">        tmp.append(table[i])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br></pre></td></tr></table></figure></div>
+
+<p>得到顺序表与还原的脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># get order table</span></span><br><span class="line">source = <span class="string">&#x27;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#123;&#125;&#x27;</span></span><br><span class="line">replaced = <span class="string">&#x27;HfVl&#123;qPcCYNMoRi6D7Jr&#125;espOL3FhwdWAtTGZba4Ugjvnx1QkKE2IS9yuz5BX08m&#x27;</span></span><br><span class="line">revsere_table = [] <span class="comment">#index是source在replace中的下标</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> source:</span><br><span class="line">    revsere_table.append(replaced.find(i))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原顺序</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">reverse_order</span>(<span class="params">data:<span class="built_in">list</span>, table: <span class="built_in">list</span></span>):</span><br><span class="line">    tmp = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">64</span>):</span><br><span class="line">        tmp.append(data[table[i]])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br></pre></td></tr></table></figure></div>
+
+<p>256 次就写个 for 循环就行了</p>
+<h3 id="程序如何比较"><a href="#程序如何比较" class="headerlink" title="程序如何比较"></a>程序如何比较</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_verify_1.jpg.avif"
+                     
+                ></p>
+<p>如图是 256 次循环后的开头代码，这次 <code>memcpy</code> 加载了一块 255 字节的数据到堆中，但不是 <code>dest</code>。经过查看，这个数据又是 opcode</p>
+<p>经过调试发现 <code>dest</code> 加载了 64 字节的数据，那么这个数据很有可能是比较数据，直接拿到脚本里去跑，解出来却是乱码。一开始以为脚本写错了，但拿个明文加密的提取的数据去跑，确实是能跑出明文的，说明比对部分还有细节。</p>
+<p>在上图中，opcode 的某些部分被修改了，并且与加密后的输入有关，随后我又偶然发现 <code>if</code> 中对索引 <code>[223, 224, 225, 226]</code> 赋的值和 <code>dest</code> 开头的 4 字节一致，但仍然没看出来有什么比较。</p>
+<p>继续向后看，发现会读取 TcpStream io 之类的，不然会卡住等待输入，在 nc 那边输点东西就可以继续跑</p>
+<p>然后找到了这个函数</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://testingcf.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/post_imgs/blade_func_verify_2.jpg.avif"
+                     
+                ></p>
+<p>我一开始以为这个就是比较函数，但是仔细看发现根本没有比较的操作，而是又是在对 opcode 进行修改操作，并且将 opcode 数据发送到 nc 端，与之前那个 <code>if</code> 里的代码行为一致，应该是编译优化导致的。</p>
+<p>看了半天确定这个程序里确实没有任何比较操作，我将目光转向那个 opcode。经过辨认发现 opcode 被修改的值是如下两个地方：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.text:0000564D3A41F1FD                 mov     eax, 1015CB52h # 加密的用户输入</span><br><span class="line">.text:0000564D3A41F202                 add     eax, r12d</span><br><span class="line">.text:0000564D3A41F205                 xor     eax, r13d</span><br><span class="line">.text:0000564D3A41F208                 ror     eax, 0Bh</span><br><span class="line">.text:0000564D3A41F20B                 not     eax</span><br><span class="line">.text:0000564D3A41F20D                 xor     eax, r14d</span><br><span class="line">.text:0000564D3A41F210                 cmp     eax, 526851A7h # dest</span><br><span class="line">.text:0000564D3A41F215                 jnz     short loc_564D3A41F21C</span><br></pre></td></tr></table></figure></div>
+
+<p>程序中的行为是取加密后的用户输入与 <code>dest</code> 中的值写入 opcode 这两处，而这个 opcode 也很明显能看出来是在验证。但是这其中 <code>r12 r13 r14</code> 寄存器的值都是未知的，我的猜测是 opcode 前面执行的代码会影响这三个寄存器，使其在运行到此处时为定值。所以我运行了该 opcode，得到三个寄存器的值：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r12 = 0x0000000464C457F</span><br><span class="line">r13 = 0x0000000746F6F72</span><br><span class="line">r14 = 0x000000031F3831F</span><br></pre></td></tr></table></figure></div>
+
+<p>逆该过程脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 由于需要模拟汇编中的位运算，所以需要使用 numpy 库</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">de_cmp</span>(<span class="params">x</span>):</span><br><span class="line">    r12 = <span class="number">0x0000000464C457F</span></span><br><span class="line">    r13 = <span class="number">0x0000000746F6F72</span></span><br><span class="line">    r14 = <span class="number">0x000000031F3831F</span></span><br><span class="line"></span><br><span class="line">    x = np.uint32(x)</span><br><span class="line">    x = np.uint32(x ^ r14)</span><br><span class="line">    x = np.uint32(~x)</span><br><span class="line">    x = np.uint32((x &lt;&lt; <span class="number">11</span>) | (x &gt;&gt; (<span class="number">32</span> - <span class="number">11</span>)))</span><br><span class="line">    x = np.uint32(x ^ r13)</span><br><span class="line">    x = np.uint32(x - r12)</span><br><span class="line">    <span class="comment">#print(hex(x))</span></span><br><span class="line">    x = np.int32(x)</span><br><span class="line">    <span class="keyword">return</span> [x &amp; <span class="number">0xff</span>, (x &amp; <span class="number">0xff00</span>) &gt;&gt; <span class="number">8</span>, (x &amp; <span class="number">0xff0000</span>) &gt;&gt; <span class="number">16</span>, (x &amp; <span class="number">0xff000000</span>) &gt;&gt; <span class="number">24</span>]</span><br></pre></td></tr></table></figure></div>
+
+<p>总的来看，整个程序其实根本没有验证 flag 的正确性，也没有执行这些 opcode，这些 opcode 只是被作为数据发送到了 nc 端</p>
+<h3 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h3><div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">data: <span class="built_in">list</span>, table: <span class="built_in">dict</span></span>):</span><br><span class="line">    tmp=[]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">        tmp.append(table[i])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">reverse_order</span>(<span class="params">data:<span class="built_in">list</span>, table: <span class="built_in">list</span></span>):</span><br><span class="line">    tmp = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">64</span>):</span><br><span class="line">        tmp.append(data[table[i]])</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">def de_cmp(x):</span></span><br><span class="line"><span class="string">    r12 = 0x0000000464C457F</span></span><br><span class="line"><span class="string">    r13 = 0x0000000746F6F72</span></span><br><span class="line"><span class="string">    r14 = 0x000000031F3831F</span></span><br><span class="line"><span class="string">    x ^= r14</span></span><br><span class="line"><span class="string">    x = ~x</span></span><br><span class="line"><span class="string">    x = (x &lt;&lt; 11) | (x &gt;&gt; (32 - 11))</span></span><br><span class="line"><span class="string">    x ^= r13</span></span><br><span class="line"><span class="string">    x -= r12</span></span><br><span class="line"><span class="string">    print(hex(x))</span></span><br><span class="line"><span class="string">    return [x &amp; 0xff, (x &amp; 0xff00) &gt;&gt; 8, (x &amp; 0xff0000) &gt;&gt; 16, (x &amp; 0xff000000) &gt;&gt; 24]</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">de_cmp</span>(<span class="params">x</span>):</span><br><span class="line">    r12 = <span class="number">0x0000000464C457F</span></span><br><span class="line">    r13 = <span class="number">0x0000000746F6F72</span></span><br><span class="line">    r14 = <span class="number">0x000000031F3831F</span></span><br><span class="line"></span><br><span class="line">    x = np.uint32(x)</span><br><span class="line">    x = np.uint32(x ^ r14)</span><br><span class="line">    x = np.uint32(~x)</span><br><span class="line">    x = np.uint32((x &lt;&lt; <span class="number">11</span>) | (x &gt;&gt; (<span class="number">32</span> - <span class="number">11</span>)))</span><br><span class="line">    x = np.uint32(x ^ r13)</span><br><span class="line">    x = np.uint32(x - r12)</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">hex</span>(x))</span><br><span class="line">    x = np.int32(x)</span><br><span class="line">    <span class="keyword">return</span> [x &amp; <span class="number">0xff</span>, (x &amp; <span class="number">0xff00</span>) &gt;&gt; <span class="number">8</span>, (x &amp; <span class="number">0xff0000</span>) &gt;&gt; <span class="number">16</span>, (x &amp; <span class="number">0xff000000</span>) &gt;&gt; <span class="number">24</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># get crypto table</span></span><br><span class="line">s0_255 = [<span class="number">0xFB</span>, <span class="number">0x7B</span>, <span class="number">0x4E</span>, <span class="number">0xBB</span>, <span class="number">0x51</span>, <span class="number">0x15</span>, <span class="number">0x8D</span>, <span class="number">0xDB</span>, <span class="number">0xB0</span>, <span class="number">0xAC</span>, <span class="number">0xA5</span>, <span class="number">0x8E</span>, <span class="number">0xAA</span>, <span class="number">0xB2</span>, <span class="number">0x60</span>, <span class="number">0xEB</span>, <span class="number">0x63</span>, <span class="number">0x5C</span>, <span class="number">0xDE</span>, <span class="number">0x42</span>, <span class="number">0x2B</span>, <span class="number">0xC6</span>, <span class="number">0xA6</span>, <span class="number">0x35</span>, <span class="number">0x30</span>, <span class="number">0x43</span>, <span class="number">0xD6</span>, <span class="number">0x5F</span>, <span class="number">0xBD</span>, <span class="number">0x24</span>, <span class="number">0xB1</span>, <span class="number">0xE3</span>, <span class="number">0x8C</span>, <span class="number">0xA7</span>, <span class="number">0xD5</span>, <span class="number">0x2A</span>, <span class="number">0x7C</span>, <span class="number">0x6D</span>, <span class="number">0x8B</span>, <span class="number">0x17</span>, <span class="number">0x9D</span>, <span class="number">0x83</span>, <span class="number">0xFE</span>, <span class="number">0x69</span>, <span class="number">0x10</span>, <span class="number">0x59</span>, <span class="number">0xA9</span>, <span class="number">0x9E</span>, <span class="number">0x0F</span>, <span class="number">0x1C</span>, <span class="number">0x66</span>, <span class="number">0x97</span>, <span class="number">0x5B</span>, <span class="number">0x61</span>, <span class="number">0xED</span>, <span class="number">0xAD</span>, <span class="number">0xE0</span>, <span class="number">0xDA</span>, <span class="number">0x27</span>, <span class="number">0x06</span>, <span class="number">0x25</span>, <span class="number">0xDC</span>, <span class="number">0x5E</span>, <span class="number">0xE7</span>,</span><br><span class="line">        <span class="number">0x41</span>, <span class="number">0x32</span>, <span class="number">0xD2</span>, <span class="number">0xD9</span>, <span class="number">0x8F</span>, <span class="number">0xEE</span>, <span class="number">0xAF</span>, <span class="number">0x03</span>, <span class="number">0x93</span>, <span class="number">0x3A</span>, <span class="number">0x00</span>, <span class="number">0xA2</span>, <span class="number">0xE1</span>, <span class="number">0xB3</span>, <span class="number">0xEC</span>, <span class="number">0x81</span>, <span class="number">0x9F</span>, <span class="number">0xCA</span>, <span class="number">0x58</span>, <span class="number">0xB7</span>, <span class="number">0x79</span>, <span class="number">0xFD</span>, <span class="number">0x3B</span>, <span class="number">0xA0</span>, <span class="number">0x02</span>, <span class="number">0x0C</span>, <span class="number">0xCB</span>, <span class="number">0xA8</span>, <span class="number">0x80</span>, <span class="number">0xC0</span>, <span class="number">0x16</span>, <span class="number">0x4D</span>, <span class="number">0x2F</span>, <span class="number">0x75</span>, <span class="number">0x71</span>, <span class="number">0x0A</span>, <span class="number">0x04</span>, <span class="number">0x39</span>, <span class="number">0xFF</span>, <span class="number">0xC1</span>, <span class="number">0x9C</span>, <span class="number">0xAB</span>, <span class="number">0xEF</span>, <span class="number">0xA4</span>, <span class="number">0xD8</span>, <span class="number">0xE2</span>, <span class="number">0x14</span>, <span class="number">0xC2</span>, <span class="number">0x6C</span>, <span class="number">0x64</span>, <span class="number">0x1E</span>, <span class="number">0x6B</span>, <span class="number">0x7E</span>, <span class="number">0x99</span>, <span class="number">0x2E</span>, <span class="number">0x09</span>, <span class="number">0x0B</span>, <span class="number">0x86</span>, <span class="number">0x74</span>, <span class="number">0x6A</span>, <span class="number">0xC4</span>, <span class="number">0x2D</span>, <span class="number">0x4F</span>, <span class="number">0xF9</span>,</span><br><span class="line">        <span class="number">0xFA</span>, <span class="number">0x94</span>, <span class="number">0xB6</span>, <span class="number">0x1F</span>, <span class="number">0x89</span>, <span class="number">0x6F</span>, <span class="number">0x5D</span>, <span class="number">0xE8</span>, <span class="number">0xEA</span>, <span class="number">0xB5</span>, <span class="number">0x5A</span>, <span class="number">0x65</span>, <span class="number">0x88</span>, <span class="number">0xC5</span>, <span class="number">0x7F</span>, <span class="number">0x77</span>, <span class="number">0x11</span>, <span class="number">0xCF</span>, <span class="number">0xF1</span>, <span class="number">0x1B</span>, <span class="number">0x3F</span>, <span class="number">0xF4</span>, <span class="number">0x48</span>, <span class="number">0x47</span>, <span class="number">0x12</span>, <span class="number">0xE4</span>, <span class="number">0xBA</span>, <span class="number">0xDF</span>, <span class="number">0xE9</span>, <span class="number">0x62</span>, <span class="number">0x6E</span>, <span class="number">0xB4</span>, <span class="number">0x96</span>, <span class="number">0xCD</span>, <span class="number">0x13</span>, <span class="number">0x53</span>, <span class="number">0x4B</span>, <span class="number">0x28</span>, <span class="number">0xD7</span>, <span class="number">0xD1</span>, <span class="number">0x33</span>, <span class="number">0xB8</span>, <span class="number">0xE6</span>, <span class="number">0x7A</span>, <span class="number">0x2C</span>, <span class="number">0x9B</span>, <span class="number">0x29</span>, <span class="number">0x44</span>, <span class="number">0x52</span>, <span class="number">0xF7</span>, <span class="number">0x20</span>, <span class="number">0xF2</span>, <span class="number">0x31</span>, <span class="number">0xD3</span>, <span class="number">0xB9</span>, <span class="number">0x40</span>, <span class="number">0xD0</span>, <span class="number">0x34</span>, <span class="number">0xF5</span>, <span class="number">0x54</span>, <span class="number">0x1A</span>, <span class="number">0x01</span>, <span class="number">0xA1</span>, <span class="number">0x92</span>,</span><br><span class="line">        <span class="number">0xFC</span>, <span class="number">0x85</span>, <span class="number">0x07</span>, <span class="number">0xBE</span>, <span class="number">0xDD</span>, <span class="number">0xBC</span>, <span class="number">0x19</span>, <span class="number">0xF3</span>, <span class="number">0x36</span>, <span class="number">0xF6</span>, <span class="number">0x72</span>, <span class="number">0x98</span>, <span class="number">0x4C</span>, <span class="number">0x7D</span>, <span class="number">0xC7</span>, <span class="number">0xD4</span>, <span class="number">0x45</span>, <span class="number">0x4A</span>, <span class="number">0x9A</span>, <span class="number">0xC3</span>, <span class="number">0x8A</span>, <span class="number">0xE5</span>, <span class="number">0x50</span>, <span class="number">0x46</span>, <span class="number">0xCC</span>, <span class="number">0x68</span>, <span class="number">0x76</span>, <span class="number">0x67</span>, <span class="number">0xC9</span>, <span class="number">0x0E</span>, <span class="number">0x3C</span>, <span class="number">0x57</span>, <span class="number">0xF0</span>, <span class="number">0x22</span>, <span class="number">0xBF</span>, <span class="number">0x26</span>, <span class="number">0x84</span>, <span class="number">0x0D</span>, <span class="number">0x90</span>, <span class="number">0xA3</span>, <span class="number">0xAE</span>, <span class="number">0x3D</span>, <span class="number">0x1D</span>, <span class="number">0xC8</span>, <span class="number">0x91</span>, <span class="number">0x05</span>, <span class="number">0x87</span>, <span class="number">0x70</span>, <span class="number">0x08</span>, <span class="number">0x73</span>, <span class="number">0x21</span>, <span class="number">0x49</span>, <span class="number">0x55</span>, <span class="number">0x3E</span>, <span class="number">0x37</span>, <span class="number">0x23</span>, <span class="number">0x18</span>, <span class="number">0x56</span>, <span class="number">0xCE</span>, <span class="number">0x82</span>, <span class="number">0x38</span>, <span class="number">0x95</span>, <span class="number">0x78</span>, <span class="number">0xF8</span>]</span><br><span class="line"></span><br><span class="line">crypto_table = <span class="built_in">dict</span>(<span class="built_in">zip</span>(s0_255,<span class="built_in">range</span>(<span class="number">0x100</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment">#get order table</span></span><br><span class="line">source = <span class="string">&#x27;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#123;&#125;&#x27;</span></span><br><span class="line">replaced = <span class="string">&#x27;HfVl&#123;qPcCYNMoRi6D7Jr&#125;espOL3FhwdWAtTGZba4Ugjvnx1QkKE2IS9yuz5BX08m&#x27;</span></span><br><span class="line">revsere_table = [] <span class="comment">#index是source在replace中的下标</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> source:</span><br><span class="line">    revsere_table.append(replaced.find(i))</span><br><span class="line"></span><br><span class="line"><span class="comment">#print(crypto_table)</span></span><br><span class="line"><span class="comment">#print(revsere_table)</span></span><br><span class="line"></span><br><span class="line">cmp_data = [<span class="number">0x526851A7</span>, <span class="number">0x31FF2785</span>, <span class="number">0xC7D28788</span>, <span class="number">0x523F23D3</span>, <span class="number">0xAF1F1055</span>, <span class="number">0x5C94F027</span>, <span class="number">0x797A3FCD</span>, <span class="number">0xE7F02F9F</span>, <span class="number">0x3C86F045</span>, <span class="number">0x6DEAB0F9</span>, <span class="number">0x91F74290</span>, <span class="number">0x7C9A3AED</span>, <span class="number">0xDC846B01</span>, <span class="number">0x0743C86C</span>, <span class="number">0xDFF7085C</span>, <span class="number">0xA4AEE3EB</span>]</span><br><span class="line"></span><br><span class="line">tmp = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> cmp_data:</span><br><span class="line">    tmp+=de_cmp(i)</span><br><span class="line"><span class="built_in">print</span>(tmp)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    tmp = decrypt(tmp, crypto_table)</span><br><span class="line">    tmp = reverse_order(tmp, revsere_table)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>.join(<span class="built_in">chr</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> tmp))</span><br></pre></td></tr></table></figure></div>
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> Hitcon 2023 Blade WP</li>
+        <li><strong>作者:</strong> Hexrotor</li>
+        <li><strong>创建于
+                :</strong> 2023-09-11 01:22:27</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-10-23 22:07:49
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://hexrotor.github.io/2023/09/10/hitcon-2023-blade-wp/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/CTF/">#CTF</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Reverse/">#Reverse</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/WP/">#WP</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/10/09/wsl-issues/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">WSL疑难杂症记录</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/05/02/manual-drive-tips/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">手动挡驾驶经验分享</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5ccd740d2c03314bbeec',
+                    clientSecret: '1c43b03d3070a4c0b688a91e470b47011c0e0dc1',
+                    repo: 'blogsrc',
+                    owner: 'Hexrotor',
+                    admin: ['Hexrotor'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Hitcon 2023 Blade WP</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E9%9D%A2%E8%A1%8C%E4%B8%BA%E5%88%86%E6%9E%90"><span class="nav-text">表面行为分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">程序逆向分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%A6%82%E4%BD%95%E6%AF%94%E8%BE%83"><span class="nav-text">程序如何比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EXP"><span class="nav-text">EXP</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 1s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">HexrotorのBlog</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.4.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex justify-center items-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.hooks.on("page:view", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+<canvas class="fireworks" style="position:fixed;left:0;top:0;z-index:1;pointer-events:none;"></canvas>
+<meting-js
+    server="netease"
+    type="playlist"
+    id="7637965554"
+	fixed="true"
+	showlrc="false"
+	lrc-type="0"
+	muted>
+</meting-js>
+</body>
+</html>

